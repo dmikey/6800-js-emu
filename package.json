@@ -1,0 +1,13 @@
+{
+    "name": "6800-js-emu",
+    "version": "1.0.0",
+    "description": "a 6800 emulator written in javascript",
+    "main": "emulator.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
+  }
+  
