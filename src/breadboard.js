@@ -32,6 +32,51 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Update memory display
         updateMemoryDisplay();
+
+        // Update breakpoint display
+        updateBreakpointDisplay();
+    }
+
+    // Update breakpoint display - Fixed to ensure it works properly
+    function updateBreakpointDisplay() {
+        const breakpointsContainer = document.getElementById('active-breakpoints');
+
+        // Exit gracefully if container isn't found - don't show an error
+        if (!breakpointsContainer) {
+            console.log("Breakpoints container not found - skipping update");
+            return;
+        }
+
+        // Get sorted breakpoints
+        const breakpoints = cpu.getBreakpoints();
+
+        // Clear previous breakpoint tags
+        breakpointsContainer.innerHTML = '';
+
+        if (breakpoints.length === 0) {
+            // Show "no breakpoints" message
+            const noBreakpointsMsg = document.createElement('span');
+            noBreakpointsMsg.id = 'no-breakpoints-msg';
+            noBreakpointsMsg.className = 'no-breakpoints-msg';
+            noBreakpointsMsg.textContent = 'No active breakpoints';
+            breakpointsContainer.appendChild(noBreakpointsMsg);
+        } else {
+            // Create a tag for each breakpoint
+            breakpoints.forEach(address => {
+                const bpTag = document.createElement('span');
+                bpTag.classList.add('breakpoint-tag');
+                bpTag.textContent = '0x' + address.toString(16).padStart(4, '0').toUpperCase();
+                bpTag.title = 'Click to remove this breakpoint';
+
+                // Add click handler to remove breakpoint
+                bpTag.addEventListener('click', function () {
+                    cpu.removeBreakpoint(address);
+                    updateUI();
+                });
+
+                breakpointsContainer.appendChild(bpTag);
+            });
+        }
     }
 
     // Handle data switches
@@ -83,13 +128,34 @@ document.addEventListener('DOMContentLoaded', function () {
                     memVal.classList.add('active');
                 }
 
+                // Mark breakpoints - FIXED: Make sure this works
+                if (cpu.hasBreakpoint(address)) {
+                    memVal.classList.add('breakpoint');
+                }
+
                 memVal.textContent = cpu.memory[address].toString(16).padStart(2, '0').toUpperCase();
                 memVal.dataset.address = address;
 
-                // Make memory cells clickable
-                memVal.addEventListener('click', function () {
-                    currentMemoryAddress = address;
-                    updateUI();
+                // FIX: Make memory cells clickable with proper event handling
+                memVal.addEventListener('click', function (e) {
+                    const addr = parseInt(this.dataset.address, 10);
+
+                    // Check if shift key is pressed
+                    if (e.shiftKey) {
+                        // Toggle breakpoint when shift+clicking
+                        console.log(`Shift-clicked at address: 0x${addr.toString(16).toUpperCase()}`);
+                        const isActive = cpu.toggleBreakpoint(addr);
+
+                        // Force update UI after toggling breakpoint
+                        updateUI();
+                    } else {
+                        // Regular click selects the memory address
+                        currentMemoryAddress = addr;
+                        updateUI();
+                    }
+
+                    // Prevent event bubbling
+                    e.stopPropagation();
                 });
 
                 memoryRow.appendChild(memVal);
@@ -204,12 +270,20 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('execute-all-button').addEventListener('click', function () {
         console.log("Executing entire program...");
 
-        // Run until NOP (0x01) is reached or max steps
+        // Run until NOP (0x01) is reached, breakpoint hit, or max steps
         const maxSteps = 100; // Safety limit to prevent infinite loops
         let steps = 0;
         let running = true;
+        let hitBreakpoint = false;
 
         while (running && steps < maxSteps) {
+            // IMPORTANT: Check for breakpoints BEFORE executing the instruction
+            if (cpu.hasBreakpoint(cpu.pc)) {
+                console.log(`Breakpoint hit at 0x${cpu.pc.toString(16).padStart(4, '0').toUpperCase()}`);
+                hitBreakpoint = true;
+                break;
+            }
+
             const opcode = cpu.memory[cpu.pc];
             console.log(`Step ${steps + 1}: PC=${cpu.pc.toString(16).padStart(4, '0')}, opcode=${opcode.toString(16).padStart(2, '0')}`);
 
@@ -223,7 +297,8 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 const result = cpu.step();
                 if (!result) {
-                    console.error("Execution failed, stopping");
+                    console.error(`Execution failed at PC=0x${(cpu.pc - 1).toString(16).padStart(4, '0').toUpperCase()}, opcode=0x${opcode.toString(16).padStart(2, '0').toUpperCase()}`);
+                    console.error("Check for invalid opcodes or memory access issues");
                     running = false;
                 }
             }
@@ -242,7 +317,14 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('flag-v').classList.toggle('on', cpu.cc.v);
         }
 
-        console.log(`Program execution completed in ${steps} steps`);
+        if (hitBreakpoint) {
+            console.log(`Program paused at breakpoint after ${steps} steps`);
+        } else if (steps >= maxSteps) {
+            console.warn(`Maximum step count (${maxSteps}) reached. Execution halted to prevent infinite loop.`);
+        } else {
+            console.log(`Program execution completed in ${steps} steps`);
+        }
+
         console.log(`Final state: A=${cpu.a.toString(16).padStart(2, '0')}, B=${cpu.b.toString(16).padStart(2, '0')}, PC=${cpu.pc.toString(16).padStart(4, '0')}`);
         console.log(`Flags - Z:${cpu.cc.z ? 'ON' : 'off'}, N:${cpu.cc.n ? 'ON' : 'off'}, V:${cpu.cc.v ? 'ON' : 'off'}, C:${cpu.cc.c ? 'ON' : 'off'}, H:${cpu.cc.h ? 'ON' : 'off'}, I:${cpu.cc.i ? 'ON' : 'off'}`);
 
@@ -284,10 +366,31 @@ document.addEventListener('DOMContentLoaded', function () {
         cpu.dumpMemory();
     });
 
+    // Add clear breakpoints button handler
+    document.getElementById('clear-breakpoints-button').addEventListener('click', function () {
+        cpu.clearAllBreakpoints();
+        console.log("All breakpoints cleared");
+
+        // Force complete UI refresh
+        updateUI();
+    });
+
     // Load example program from the input box
     const exampleProgram = document.getElementById('program-input');
     if (!exampleProgram.value) {
         exampleProgram.value = "86 05 97 10 86 03 6B 10 27 01 97 20 01";
+    }
+
+    // Update the instructions for breakpoints
+    const memoryInstructionsEl = document.querySelector('.memory-instructions');
+    if (!memoryInstructionsEl.innerHTML.includes('key-instruction')) {
+        memoryInstructionsEl.innerHTML = 'Click on memory cells to select them. Press <span class="key-instruction">Shift</span> + <span class="key-instruction">Click</span> on a memory cell to toggle a breakpoint.';
+    }
+
+    // Add a debugging helper function
+    function debugBreakpoints() {
+        const breakpoints = cpu.getBreakpoints();
+        console.log("Current breakpoints:", breakpoints.map(b => "0x" + b.toString(16).toUpperCase()));
     }
 
     // Initialize UI

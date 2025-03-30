@@ -167,9 +167,10 @@ class M6800 {
             h: false, // Half-carry
             i: false, // Interrupt Mask
             c: false, // Carry
-            v: false  // Overflow (adding this flag)
+            v: false  // Overflow
         };
         this.memory = new Uint8Array(65536);  // 64KB of memory
+        this.breakpoints = new Set();  // Set to store breakpoints
     }
 
     // Method to reset the CPU state
@@ -185,6 +186,8 @@ class M6800 {
         for (let i = 0; i < 256; i++) {
             this.memory[i] = 0;
         }
+
+        // Don't clear breakpoints during reset
         console.log("CPU reset complete");
     }
 
@@ -196,32 +199,105 @@ class M6800 {
         this.pc = startAddress;  // Set the program counter to the start address of the program
     }
 
+    // Fixed breakpoint management methods
+    addBreakpoint(address) {
+        // Ensure address is a number and within valid range
+        address = Number(address) & 0xFFFF;
+        this.breakpoints.add(address);
+        console.log(`Breakpoint set at 0x${address.toString(16).padStart(4, '0').toUpperCase()}`);
+        return true;
+    }
+
+    removeBreakpoint(address) {
+        // Ensure address is a number and within valid range
+        address = Number(address) & 0xFFFF;
+        if (this.breakpoints.has(address)) {
+            this.breakpoints.delete(address);
+            console.log(`Breakpoint removed from 0x${address.toString(16).padStart(4, '0').toUpperCase()}`);
+            return true;
+        }
+        return false;
+    }
+
+    toggleBreakpoint(address) {
+        // Ensure address is a number and within valid range
+        address = Number(address) & 0xFFFF;
+
+        if (this.breakpoints.has(address)) {
+            this.removeBreakpoint(address);
+            return false; // Breakpoint removed
+        } else {
+            this.addBreakpoint(address);
+            return true; // Breakpoint added
+        }
+    }
+
+    hasBreakpoint(address) {
+        // Ensure address is a number and within valid range
+        address = Number(address) & 0xFFFF;
+        return this.breakpoints.has(address);
+    }
+
+    clearAllBreakpoints() {
+        this.breakpoints.clear();
+        console.log("All breakpoints cleared");
+    }
+
+    getBreakpoints() {
+        return Array.from(this.breakpoints).sort((a, b) => a - b);
+    }
+
     // Execute a single instruction
     step() {
+        // First, check if the current PC is at a breakpoint
+        const atBreakpoint = this.hasBreakpoint(this.pc);
+        if (atBreakpoint) {
+            console.log(`Breakpoint hit at PC=0x${this.pc.toString(16).padStart(4, '0').toUpperCase()}`);
+            return { breakpointHit: true, success: true };
+        }
+
+        // Record the PC before execution for debugging
+        const oldPC = this.pc;
+
         // Fetch the opcode
         const opcode = this.memory[this.pc++];
 
         // Execute the instruction
-        return this.execute(opcode);
+        const result = this.execute(opcode);
+
+        // Return execution result
+        return result;
     }
 
-    // Run the program until NOP or a specified number of steps
+    // Run the program until NOP, breakpoint, or a specified number of steps
     run(maxSteps = 1000) {
         let steps = 0;
         let running = true;
+        let hitBreakpoint = false;
 
         while (running && steps < maxSteps) {
+            // Check if current PC is at a breakpoint BEFORE executing
+            if (this.breakpoints.has(this.pc)) {
+                console.log(`Breakpoint hit at 0x${this.pc.toString(16).padStart(4, '0').toUpperCase()}`);
+                hitBreakpoint = true;
+                break;
+            }
+
             const opcode = this.memory[this.pc];
             if (opcode === 0x01) { // NOP can be used as a stopping point
                 this.step();
                 running = false;
             } else {
-                this.step();
+                const result = this.step();
+                if (result.breakpointHit) {
+                    hitBreakpoint = true;
+                    break;
+                }
             }
             steps++;
         }
 
-        return steps;
+        return { steps, hitBreakpoint };
     }
 
     // Decoding and executing a single instruction
@@ -236,7 +312,7 @@ class M6800 {
             cc: { ...this.cc }
         };
 
-        const result = (() => {
+        try {
             switch (opcode) {
                 case 0x00: // Treat as NOP for compatibility
                     console.log("Encountered opcode 0x00, treating as NOP");
@@ -298,64 +374,79 @@ class M6800 {
                     Instructions.STX(this, this.memory[this.pc]);
                     this.pc++;
                     break;
+
                 case 0x90: // SUB Direct
                     Instructions.SUB(this, this.memory[this.pc]);
                     this.pc++;
                     break;
+
                 case 0x1C: // INC Direct
                     Instructions.INC(this, this.memory[this.pc]);
                     this.pc++;
                     break;
+
                 case 0x1A: // DEC Direct
                     Instructions.DEC(this, this.memory[this.pc]);
                     this.pc++;
                     break;
+
                 case 0x20: // BRA
                     Instructions.BRA(this, this.memory[this.pc]);
                     this.pc++;
                     break;
+
                 case 0x26: // BNE
                     Instructions.BNE(this, this.memory[this.pc]);
                     this.pc++;
                     break;
+
                 case 0x24: // AND Direct
                     Instructions.AND(this, this.memory[this.pc]);
                     this.pc++;
                     break;
+
                 case 0x2A: // ORA Direct
                     Instructions.ORA(this, this.memory[this.pc]);
                     this.pc++;
                     break;
+
                 case 0x28: // EOR Direct
                     Instructions.EOR(this, this.memory[this.pc]);
                     this.pc++;
                     break;
+
                 case 0x2B: // ROL
                     Instructions.ROL(this);
                     break;
+
                 case 0x2E: // ROR
                     Instructions.ROR(this);
                     break;
+
                 case 0x05: // TAP (Transfer Accumulator A to CCR)
                     console.log("Executing TAP instruction");
                     Instructions.TAP(this);
                     break;
+
                 case 0x08: // INX (Increment Index Register X)
                     console.log("Executing INX instruction");
                     Instructions.INX(this);
                     break;
+
                 default:
-                    console.error(`Unimplemented opcode: ${opcode.toString(16)}`);
+                    console.error(`Unimplemented opcode: 0x${opcode.toString(16).padStart(2, '0').toUpperCase()}`);
                     return false;
             }
-        })();
 
-        if (result) {
+            // Log post-execution state if we reach here (no errors)
             console.log(`Post-execution state: A=${this.a.toString(16).padStart(2, '0').toUpperCase()}, B=${this.b.toString(16).padStart(2, '0').toUpperCase()}, X=${this.x.toString(16).padStart(4, '0').toUpperCase()}, PC=${this.pc.toString(16).padStart(4, '0').toUpperCase()}, SP=${this.sp.toString(16).padStart(4, '0').toUpperCase()}`);
             console.log(`Flags - Z:${this.cc.z ? 'ON' : 'OFF'}, N:${this.cc.n ? 'ON' : 'OFF'}, C:${this.cc.c ? 'ON' : 'OFF'}, H:${this.cc.h ? 'ON' : 'OFF'}, I:${this.cc.i ? 'ON' : 'OFF'}, V:${this.cc.v ? 'ON' : 'OFF'}`);
-        }
+            return true;
 
-        return result;
+        } catch (error) {
+            console.error(`Error executing opcode 0x${opcode.toString(16).padStart(2, '0').toUpperCase()}: ${error.message}`);
+            return false;
+        }
     }
 
     // Add memory dump functionality

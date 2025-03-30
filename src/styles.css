@@ -423,6 +423,160 @@ h3 {
     box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
+/* Style for breakpoints - Enhanced visibility */
+.mem-val.breakpoint {
+    background-color: #ff3333 !important;
+    color: white !important;
+    font-weight: bold;
+    position: relative;
+    box-shadow: inset 0 0 0 2px #f00, 0 0 6px #f00;
+}
+
+.mem-val.breakpoint:before {
+    content: '•';
+    position: absolute;
+    color: yellow;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 18px;
+    font-weight: bold;
+    text-shadow: 0 0 3px #000;
+}
+
+/* Style for active breakpoint (when PC is at breakpoint) */
+.mem-val.breakpoint.active {
+    background-color: #f00 !important;
+    color: white !important;
+    animation: breakpoint-pulse 1s infinite alternate;
+}
+
+@keyframes breakpoint-pulse {
+    from {
+        background-color: rgba(255, 0, 0, 0.8);
+        box-shadow: inset 0 0 0 1px #f00, 0 0 5px #f00;
+    }
+
+    to {
+        background-color: rgba(255, 0, 0, 1);
+        box-shadow: inset 0 0 0 1px #f00, 0 0 10px #f00;
+    }
+}
+
+/* Breakpoint tag styles - Enhanced for better visibility */
+.breakpoint-tag {
+    display: inline-block;
+    background-color: #f55;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-family: 'Courier New', monospace;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+    margin: 3px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border: 1px solid #d33;
+}
+
+.breakpoint-tag:hover {
+    background-color: #f33;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.breakpoint-tag:active {
+    transform: translateY(0);
+    background-color: #d00;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Memory instructions */
+.memory-instructions {
+    font-size: 0.9em;
+    color: #555;
+    margin-bottom: 12px;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 6px;
+    line-height: 1.5;
+    border: 1px solid #ddd;
+}
+
+.key-instruction {
+    background-color: #ddd;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    border: 1px solid #ccc;
+    color: #333;
+    white-space: nowrap;
+    margin: 0 2px;
+    font-weight: bold;
+}
+
+/* Breakpoint management panel */
+.breakpoint-management {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+}
+
+.breakpoint-management h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #444;
+}
+
+.active-breakpoints {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 10px;
+    min-height: 30px;
+}
+
+.breakpoint-tag {
+    display: inline-block;
+    background-color: #f88;
+    color: #700;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-family: 'Courier New', monospace;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+}
+
+.breakpoint-tag:hover {
+    background-color: #f66;
+    transform: translateY(-2px);
+}
+
+.breakpoint-tag:active {
+    transform: translateY(0);
+}
+
+#clear-breakpoints-button {
+    background-color: #a55;
+    margin-top: 5px;
+}
+
+#clear-breakpoints-button:hover {
+    background-color: #933;
+}
+
+.no-breakpoints-msg {
+    color: #888;
+    font-style: italic;
+    font-size: 0.9em;
+    padding: 5px 0;
+}
+
 /* Program input section */
 .program-section {
     background-color: #f8f8f8;
@@ -518,6 +672,34 @@ h3 {
     line-height: 1.4;
     border-bottom: 1px dotted #333;
     padding-bottom: 3px;
+}
+
+.debug-actions {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Memory instructions */
+.memory-instructions {
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 10px;
+    padding: 8px;
+    background-color: #f5f5f5;
+    border-radius: 6px;
+    line-height: 1.4;
+}
+
+.key-instruction {
+    background-color: #eee;
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    border: 1px solid #ddd;
+    color: #444;
+    white-space: nowrap;
+    margin: 0 2px;
 }
 
 /* Button animations */

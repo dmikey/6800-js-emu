@@ -205,6 +205,10 @@
 
         <div class="memory-section">
             <h3>Memory</h3>
+            <div class="memory-instructions">
+                Click on memory cells to select them. Press <span class="key-instruction">Shift</span> + <span
+                    class="key-instruction">Click</span> on a memory cell to toggle a breakpoint.
+            </div>
             <div class="memory-display">
                 <div class="memory-row header">
                     <span class="addr"></span>
@@ -243,6 +247,20 @@
         <div class="debug-section">
             <h3>Debug Console</h3>
             <div id="debug-console"></div>
+
+            <div class="breakpoint-management">
+                <h4>Breakpoint Management</h4>
+                <div class="breakpoint-instructions">
+                    Press <span class="key-instruction">Shift</span> + <span class="key-instruction">Click</span> on a
+                    memory cell to set a breakpoint.
+                    When program execution reaches a breakpoint, it will pause.
+                </div>
+                <div id="active-breakpoints" class="active-breakpoints">
+                    <span class="no-breakpoints-msg" id="no-breakpoints-msg">No active breakpoints</span>
+                    <!-- Breakpoint tags will be added here by JavaScript -->
+                </div>
+                <button id="clear-breakpoints-button" class="action-button">Clear All Breakpoints</button>
+            </div>
         </div>
 
         <!-- Footer section -->
