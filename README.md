@@ -3,6 +3,33 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 ![Platform](https://img.shields.io/badge/platform-browser%20%7C%20node.js-lightgrey)
 
+## Motorola 6800 Architecture
+
+```mermaid
+graph TD
+    subgraph "Motorola 6800 CPU"
+        A[Accumulator A] --- ALU
+        B[Accumulator B] --- ALU
+        IX[Index Register X] --- ALU
+        PC[Program Counter] --- CTRL
+        SP[Stack Pointer] --- CTRL
+        ALU[Arithmetic Logic Unit] --- CTRL
+        CCR[Condition Code Register] --- CTRL
+        CTRL[Control Unit]
+        IR[Instruction Register] --- CTRL
+        DEC[Instruction Decoder] --- CTRL
+    end
+    
+    CTRL --- ADDR[Address Bus]
+    CTRL --- DATA[Data Bus]
+    
+    ADDR --- MEM[Memory]
+    DATA --- MEM
+    
+    ADDR --- IO[I/O Devices]
+    DATA --- IO
+```
+
 A Motorola 6800 microprocessor emulator written in JavaScript with both browser and Node.js support.
 
 ## Overview
