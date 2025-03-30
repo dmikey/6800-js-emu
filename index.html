@@ -10,7 +10,7 @@
 
 <body>
     <div class="breadboard">
-        <h1>6800 Breadboard Simulator</h1>
+        <h1>6800 Breadboard Simulator <span class="version">v1.1</span></h1>
 
         <div class="control-section">
             <div class="registers">
@@ -184,8 +184,11 @@
 
         <div class="program-section">
             <h3>Program</h3>
+            <div class="program-instructions">Enter hexadecimal bytes separated by spaces (e.g., 86 05 97 10)</div>
             <textarea id="program-input" placeholder="Enter program bytes in hex (e.g., 86 05 97 10...)"></textarea>
-            <button id="load-program">Load Program</button>
+            <div class="program-actions">
+                <button id="load-program">Load Program</button>
+            </div>
         </div>
 
         <div class="debug-section">

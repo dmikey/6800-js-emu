@@ -3,38 +3,47 @@ body {
     background-color: #f0f0f0;
     margin: 0;
     padding: 20px;
+    line-height: 1.4;
 }
 
 .breadboard {
     background-color: #e0e0e0;
     border: 2px solid #888;
-    border-radius: 10px;
-    padding: 20px;
-    max-width: 1000px;
+    border-radius: 12px;
+    padding: 25px;
+    max-width: 1100px;
     margin: 0 auto;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
 h1 {
     text-align: center;
     margin-top: 0;
+    margin-bottom: 20px;
     color: #333;
+    font-size: 28px;
+    text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.8);
 }
 
 h3 {
     margin-top: 0;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     color: #444;
+    font-size: 18px;
+    border-bottom: 1px solid #aaa;
+    padding-bottom: 5px;
 }
 
+/* Control section with registers and flags */
 .control-section {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     background-color: #f8f8f8;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
 }
 
 .registers {
@@ -42,7 +51,7 @@ h3 {
 }
 
 .register {
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     display: flex;
     align-items: center;
 }
@@ -51,27 +60,35 @@ h3 {
     font-weight: bold;
     width: 140px;
     display: inline-block;
+    color: #333;
 }
 
 .register span {
     display: inline-block;
-    font-family: monospace;
+    font-family: 'Courier New', monospace;
     background-color: #000;
     color: #0f0;
-    padding: 4px 8px;
-    border-radius: 3px;
-    min-width: 40px;
+    padding: 6px 10px;
+    border-radius: 4px;
+    min-width: 50px;
     text-align: center;
-    font-size: 16px;
+    font-size: 18px;
     border: 1px solid #444;
+    letter-spacing: 1px;
+    box-shadow: inset 0 0 5px rgba(0, 255, 0, 0.2);
 }
 
+/* Flags section */
 .flags {
     display: flex;
     flex: 1;
     justify-content: flex-end;
     align-items: flex-start;
-    gap: 15px;
+    gap: 18px;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    margin-left: 20px;
 }
 
 .flag {
@@ -82,42 +99,50 @@ h3 {
 
 .flag label {
     font-weight: bold;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
+    font-size: 16px;
+    color: #333;
 }
 
 .led {
-    width: 15px;
-    height: 15px;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
     background-color: #444;
     border: 2px solid #222;
-    box-shadow: inset 0 0 2px rgba(255, 255, 255, 0.3);
+    box-shadow: inset 0 0 3px rgba(255, 255, 255, 0.3);
+    transition: all 0.15s ease;
 }
 
 .led.on {
     background-color: #f00;
-    box-shadow: 0 0 8px #f00, inset 0 0 2px rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 10px #f00, inset 0 0 3px rgba(255, 255, 255, 0.8);
 }
 
+/* Switches section */
 .switches-section {
     display: flex;
     justify-content: space-between;
-    gap: 20px;
-    margin-bottom: 20px;
+    gap: 25px;
+    margin-bottom: 25px;
 }
 
 .data-switches {
     flex: 3;
     background-color: #ddd;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ccc;
 }
 
 .switches {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
 }
 
 .switch {
@@ -173,27 +198,101 @@ h3 {
 .data-display {
     background-color: #000;
     color: #0f0;
-    padding: 10px;
+    padding: 12px;
     text-align: center;
-    border-radius: 5px;
-    font-family: monospace;
-    font-size: 18px;
-    margin-top: 10px;
+    border-radius: 6px;
+    font-family: 'Courier New', monospace;
+    font-size: 20px;
+    margin-top: 15px;
     display: flex;
     justify-content: space-around;
+    box-shadow: inset 0 0 10px rgba(0, 255, 0, 0.2);
+    border: 1px solid #444;
 }
 
 .register-select,
 .action-buttons {
     flex: 1;
     background-color: #ddd;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ccc;
     display: flex;
     flex-direction: column;
 }
 
+/* Memory address controls */
+.memory-address-controls {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    padding: 12px;
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+}
+
+.memory-address,
+.memory-value {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.memory-address label,
+.memory-value label {
+    font-weight: bold;
+    width: 70px;
+    color: #333;
+}
+
+.memory-address span,
+.memory-value span {
+    font-family: 'Courier New', monospace;
+    background-color: #000;
+    color: #0f0;
+    padding: 6px 10px;
+    border-radius: 4px;
+    min-width: 50px;
+    text-align: center;
+    font-size: 18px;
+    border: 1px solid #444;
+    letter-spacing: 1px;
+    box-shadow: inset 0 0 5px rgba(0, 255, 0, 0.2);
+    flex-grow: 1;
+}
+
+.address-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+}
+
+.address-button {
+    width: 45px;
+    height: 45px;
+    background-color: #579;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s;
+}
+
+.address-button:hover {
+    background-color: #468;
+    transform: translateY(-2px);
+}
+
+.address-button:active {
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+    transform: translateY(1px);
+}
+
+/* Register selector buttons */
 .reg-switches {
     display: flex;
     justify-content: space-around;
@@ -209,17 +308,19 @@ h3 {
 }
 
 .reg-switch label {
-    display: block;
-    width: 50px;
-    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
     background-color: #888;
     color: white;
-    border-radius: 8px;
-    line-height: 50px;
-    font-size: 20px;
+    border-radius: 10px;
+    font-size: 22px;
     font-weight: bold;
     cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
 }
 
 .reg-switch input:checked+label {
@@ -227,9 +328,13 @@ h3 {
     box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
+/* Action buttons */
+.action-buttons {
+    gap: 12px;
+}
+
 .action-button {
-    margin: 10px 0;
-    padding: 12px 0;
+    padding: 14px 0;
     background-color: #579;
     border: none;
     border-radius: 8px;
@@ -237,12 +342,14 @@ h3 {
     font-weight: bold;
     font-size: 16px;
     cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
     transition: all 0.2s;
+    margin: 5px 0;
 }
 
 .action-button:hover {
     background-color: #468;
+    transform: translateY(-2px);
 }
 
 .action-button:active {
@@ -250,19 +357,22 @@ h3 {
     transform: translateY(1px);
 }
 
+/* Memory display */
 .memory-section {
     background-color: #f8f8f8;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
 }
 
 .memory-display {
-    font-family: monospace;
+    font-family: 'Courier New', monospace;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 8px;
     overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .memory-row {
@@ -275,111 +385,84 @@ h3 {
 }
 
 .memory-row.header {
-    background-color: #eee;
+    background-color: #e0e0e0;
     font-weight: bold;
+    position: sticky;
+    top: 0;
 }
 
 .addr {
-    width: 60px;
-    padding: 5px;
+    width: 70px;
+    padding: 8px;
     background-color: #eee;
     border-right: 1px solid #ccc;
     text-align: center;
+    font-weight: bold;
 }
 
 .mem-val {
-    width: 30px;
-    padding: 5px;
+    width: 35px;
+    padding: 8px 5px;
     text-align: center;
+    transition: background-color 0.2s;
+    cursor: pointer;
+}
+
+.mem-val:hover {
+    background-color: #e5e5ff;
 }
 
 .mem-val.active {
     background-color: #ffd;
-}
-
-/* Memory address navigation styles */
-.memory-address-controls {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 15px;
-}
-
-.memory-address,
-.memory-value {
-    display: flex;
-    align-items: center;
-    margin-bottom: 8px;
-}
-
-.memory-address label,
-.memory-value label {
     font-weight: bold;
-    width: 60px;
-}
-
-.memory-address span,
-.memory-value span {
-    font-family: monospace;
-    background-color: #000;
-    color: #0f0;
-    padding: 4px 8px;
-    border-radius: 3px;
-    min-width: 40px;
-    text-align: center;
-    font-size: 16px;
-    border: 1px solid #444;
-}
-
-.address-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin: 8px 0;
-}
-
-.address-button {
-    width: 40px;
-    height: 40px;
-    background-color: #579;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.address-button:hover {
-    background-color: #468;
-}
-
-.address-button:active {
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
-    transform: translateY(1px);
 }
 
 .mem-val.current {
     background-color: #ddf;
     font-weight: bold;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
+/* Program input section */
 .program-section {
     background-color: #f8f8f8;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+    margin-bottom: 25px;
+}
+
+.program-instructions {
+    color: #555;
+    margin-bottom: 10px;
+    font-style: italic;
+}
+
+.program-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
 }
 
 #program-input {
     width: 100%;
-    height: 80px;
+    height: 100px;
     margin: 10px 0;
-    font-family: monospace;
+    font-family: 'Courier New', monospace;
     font-size: 16px;
-    padding: 10px;
+    padding: 15px;
     box-sizing: border-box;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 6px;
+    resize: vertical;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#program-input:focus {
+    outline: none;
+    border-color: #579;
+    box-shadow: 0 0 5px rgba(87, 153, 170, 0.5), inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 #load-program {
@@ -387,42 +470,57 @@ h3 {
     color: white;
     border: none;
     border-radius: 5px;
-    padding: 8px 15px;
-    font-size: 14px;
+    padding: 10px 20px;
+    font-size: 16px;
     cursor: pointer;
     float: right;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s;
 }
 
 #load-program:hover {
     background-color: #468;
+    transform: translateY(-2px);
 }
 
+#load-program:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Debug console */
 .debug-section {
     background-color: #f8f8f8;
-    padding: 15px;
-    border-radius: 8px;
-    margin-top: 20px;
-    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 25px;
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
 }
 
 #debug-console {
     background-color: #000;
     color: #0f0;
-    font-family: monospace;
+    font-family: 'Courier New', monospace;
     font-size: 14px;
-    padding: 10px;
-    border-radius: 5px;
-    height: 150px;
+    padding: 15px;
+    border-radius: 6px;
+    height: 200px;
     overflow-y: scroll;
     white-space: pre-wrap;
     word-break: break-all;
+    box-shadow: inset 0 0 15px rgba(0, 255, 0, 0.1);
+    border: 1px solid #444;
 }
 
 #debug-console div {
-    margin: 2px 0;
-    line-height: 1.3;
+    margin: 3px 0;
+    line-height: 1.4;
+    border-bottom: 1px dotted #333;
+    padding-bottom: 3px;
 }
 
+/* Button animations */
 @keyframes button-flash {
     0% {
         background-color: #579;
@@ -430,6 +528,7 @@ h3 {
 
     50% {
         background-color: #f88;
+        box-shadow: 0 0 15px rgba(255, 100, 100, 0.8);
     }
 
     100% {
@@ -438,10 +537,10 @@ h3 {
 }
 
 .button-flash {
-    animation: button-flash 0.2s ease-in-out;
+    animation: button-flash 0.3s ease-in-out;
 }
 
-/* This makes the reset button more distinctive */
+/* Special button styling */
 #reset-button {
     background-color: #755;
 }
@@ -450,7 +549,6 @@ h3 {
     background-color: #644;
 }
 
-/* This makes the execute button more visible */
 #execute-all-button {
     background-color: #4a6;
 }
@@ -461,4 +559,61 @@ h3 {
 
 #execute-button {
     background-color: #579;
+}
+
+#full-reset-button {
+    background-color: #955;
+}
+
+#full-reset-button:hover {
+    background-color: #844;
+}
+
+/* Version display */
+.version {
+    font-size: 14px;
+    font-weight: normal;
+    color: #666;
+    vertical-align: middle;
+    background-color: #ddd;
+    padding: 2px 6px;
+    border-radius: 10px;
+}
+
+/* Responsive design */
+@media (max-width: 1000px) {
+    .switches-section {
+        flex-direction: column;
+    }
+
+    .control-section {
+        flex-direction: column;
+    }
+
+    .flags {
+        margin-left: 0;
+        margin-top: 15px;
+        justify-content: space-around;
+    }
+}
+
+@media (max-width: 768px) {
+    .breadboard {
+        padding: 15px;
+    }
+
+    .switches {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .switch {
+        margin: 5px 10px;
+    }
+
+    .memory-row .mem-val {
+        padding: 6px 3px;
+        width: 28px;
+        font-size: 12px;
+    }
 }
