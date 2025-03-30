@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         console.log(`Program execution completed in ${steps} steps`);
         console.log(`Final state: A=${cpu.a.toString(16).padStart(2, '0')}, B=${cpu.b.toString(16).padStart(2, '0')}, PC=${cpu.pc.toString(16).padStart(4, '0')}`);
-        console.log(`Flags - Z:${cpu.cc.z ? 'ON' : 'off'}, N:${cpu.cc.n ? 'ON' : 'off'}, V:${cpu.cc.v ? 'ON' : 'off'}, C:${cpu.cc.c ? 'ON' : 'off'}`);
+        console.log(`Flags - Z:${cpu.cc.z ? 'ON' : 'off'}, N:${cpu.cc.n ? 'ON' : 'off'}, V:${cpu.cc.v ? 'ON' : 'off'}, C:${cpu.cc.c ? 'ON' : 'off'}, H:${cpu.cc.h ? 'ON' : 'off'}, I:${cpu.cc.i ? 'ON' : 'off'}`);
 
         // Full UI update at the end
         updateUI();
@@ -276,6 +276,12 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             alert('Invalid program format. Please enter hex bytes separated by spaces.');
         }
+    });
+
+    // Add memory dump button handler
+    document.getElementById('dump-memory').addEventListener('click', function () {
+        console.log("Dumping memory...");
+        cpu.dumpMemory();
     });
 
     // Load example program from the input box

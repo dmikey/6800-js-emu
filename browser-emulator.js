@@ -226,119 +226,145 @@ class M6800 {
 
     // Decoding and executing a single instruction
     execute(opcode) {
-        switch (opcode) {
-            case 0x00: // Treat as NOP for compatibility
-                console.log("Encountered opcode 0x00, treating as NOP");
-                break;
+        console.log(`Executing opcode: ${opcode.toString(16).padStart(2, '0').toUpperCase()} at PC=${(this.pc - 1).toString(16).padStart(4, '0').toUpperCase()}`);
+        const preState = {
+            a: this.a,
+            b: this.b,
+            x: this.x,
+            pc: this.pc,
+            sp: this.sp,
+            cc: { ...this.cc }
+        };
 
-            case 0x86: // LDA Immediate
-                // Get immediate value (PC is already incremented in step())
-                const immediateValue = this.memory[this.pc];
-                console.log(`LDA Immediate: Loading value ${immediateValue.toString(16)} into A`);
-                this.a = immediateValue;
-                setCC(this, this.a);
-                this.pc++;
-                break;
+        const result = (() => {
+            switch (opcode) {
+                case 0x00: // Treat as NOP for compatibility
+                    console.log("Encountered opcode 0x00, treating as NOP");
+                    break;
 
-            case 0x97: // STA Direct
-                const staAddress = this.memory[this.pc];
-                console.log(`STA Direct: Storing A (${this.a.toString(16)}) to address ${staAddress.toString(16)}`);
-                this.memory[staAddress] = this.a;
-                setCC(this, this.a);
-                this.pc++;
-                break;
+                case 0x86: // LDA Immediate
+                    // Get immediate value (PC is already incremented in step())
+                    const immediateValue = this.memory[this.pc];
+                    console.log(`LDA Immediate: Loading value ${immediateValue.toString(16)} into A`);
+                    this.a = immediateValue;
+                    setCC(this, this.a);
+                    this.pc++;
+                    break;
 
-            case 0x8E: // LDX Immediate
-                const highByte = this.memory[this.pc];
-                const lowByte = this.memory[this.pc + 1];
-                const xValue = (highByte << 8) | lowByte;
-                console.log(`LDX Immediate: Loading value ${xValue.toString(16)} into X`);
-                this.x = xValue;
-                setCC(this, highByte); // Set condition codes based on high byte
-                this.pc += 2; // X register is 16-bit, so we need to increment PC by 2
-                break;
+                case 0x97: // STA Direct
+                    const staAddress = this.memory[this.pc];
+                    console.log(`STA Direct: Storing A (${this.a.toString(16)}) to address ${staAddress.toString(16)}`);
+                    this.memory[staAddress] = this.a;
+                    setCC(this, this.a);
+                    this.pc++;
+                    break;
 
-            case 0x6B: // ADD Direct
-                const addAddress = this.memory[this.pc];
-                const addValue = this.memory[addAddress];
-                console.log(`ADD Direct: Adding memory[${addAddress.toString(16)}]=${addValue.toString(16)} to A=${this.a.toString(16)}`);
-                const addResult = this.a + addValue;
-                this.a = addResult & 0xFF;
-                setCC(this, addResult, true);
-                this.pc++;
-                break;
+                case 0x8E: // LDX Immediate
+                    const highByte = this.memory[this.pc];
+                    const lowByte = this.memory[this.pc + 1];
+                    const xValue = (highByte << 8) | lowByte;
+                    console.log(`LDX Immediate: Loading value ${xValue.toString(16)} into X`);
+                    this.x = xValue;
+                    setCC(this, highByte); // Set condition codes based on high byte
+                    this.pc += 2; // X register is 16-bit, so we need to increment PC by 2
+                    break;
 
-            case 0x27: // BEQ (Branch if Equal)
-                const beqOffset = this.memory[this.pc];
-                console.log(`BEQ: Branch if Z=1 by offset ${beqOffset.toString(16)}, current Z=${this.cc.z}`);
-                if (this.cc.z) {
-                    const signedOffset = beqOffset & 0x80 ? (beqOffset - 256) : beqOffset;
-                    this.pc += signedOffset;
-                }
-                this.pc++;
-                break;
+                case 0x6B: // ADD Direct
+                    const addAddress = this.memory[this.pc];
+                    const addValue = this.memory[addAddress];
+                    console.log(`ADD Direct: Adding memory[${addAddress.toString(16)}]=${addValue.toString(16)} to A=${this.a.toString(16)}`);
+                    const addResult = this.a + addValue;
+                    this.a = addResult & 0xFF;
+                    setCC(this, addResult, true);
+                    this.pc++;
+                    break;
 
-            case 0x01: // NOP
-                console.log("NOP: No operation");
-                Instructions.NOP();
-                break;
+                case 0x27: // BEQ (Branch if Equal)
+                    const beqOffset = this.memory[this.pc];
+                    console.log(`BEQ: Branch if Z=1 by offset ${beqOffset.toString(16)}, current Z=${this.cc.z}`);
+                    if (this.cc.z) {
+                        const signedOffset = beqOffset & 0x80 ? (beqOffset - 256) : beqOffset;
+                        this.pc += signedOffset;
+                    }
+                    this.pc++;
+                    break;
 
-            case 0x10: // STX Direct
-                Instructions.STX(this, this.memory[this.pc]);
-                this.pc++;
-                break;
-            case 0x90: // SUB Direct
-                Instructions.SUB(this, this.memory[this.pc]);
-                this.pc++;
-                break;
-            case 0x1C: // INC Direct
-                Instructions.INC(this, this.memory[this.pc]);
-                this.pc++;
-                break;
-            case 0x1A: // DEC Direct
-                Instructions.DEC(this, this.memory[this.pc]);
-                this.pc++;
-                break;
-            case 0x20: // BRA
-                Instructions.BRA(this, this.memory[this.pc]);
-                this.pc++;
-                break;
-            case 0x26: // BNE
-                Instructions.BNE(this, this.memory[this.pc]);
-                this.pc++;
-                break;
-            case 0x24: // AND Direct
-                Instructions.AND(this, this.memory[this.pc]);
-                this.pc++;
-                break;
-            case 0x2A: // ORA Direct
-                Instructions.ORA(this, this.memory[this.pc]);
-                this.pc++;
-                break;
-            case 0x28: // EOR Direct
-                Instructions.EOR(this, this.memory[this.pc]);
-                this.pc++;
-                break;
-            case 0x2B: // ROL
-                Instructions.ROL(this);
-                break;
-            case 0x2E: // ROR
-                Instructions.ROR(this);
-                break;
-            case 0x05: // TAP (Transfer Accumulator A to CCR)
-                console.log("Executing TAP instruction");
-                Instructions.TAP(this);
-                break;
-            case 0x08: // INX (Increment Index Register X)
-                console.log("Executing INX instruction");
-                Instructions.INX(this);
-                break;
-            default:
-                console.error(`Unimplemented opcode: ${opcode.toString(16)}`);
-                return false;
+                case 0x01: // NOP
+                    console.log("NOP: No operation");
+                    Instructions.NOP();
+                    break;
+
+                case 0x10: // STX Direct
+                    Instructions.STX(this, this.memory[this.pc]);
+                    this.pc++;
+                    break;
+                case 0x90: // SUB Direct
+                    Instructions.SUB(this, this.memory[this.pc]);
+                    this.pc++;
+                    break;
+                case 0x1C: // INC Direct
+                    Instructions.INC(this, this.memory[this.pc]);
+                    this.pc++;
+                    break;
+                case 0x1A: // DEC Direct
+                    Instructions.DEC(this, this.memory[this.pc]);
+                    this.pc++;
+                    break;
+                case 0x20: // BRA
+                    Instructions.BRA(this, this.memory[this.pc]);
+                    this.pc++;
+                    break;
+                case 0x26: // BNE
+                    Instructions.BNE(this, this.memory[this.pc]);
+                    this.pc++;
+                    break;
+                case 0x24: // AND Direct
+                    Instructions.AND(this, this.memory[this.pc]);
+                    this.pc++;
+                    break;
+                case 0x2A: // ORA Direct
+                    Instructions.ORA(this, this.memory[this.pc]);
+                    this.pc++;
+                    break;
+                case 0x28: // EOR Direct
+                    Instructions.EOR(this, this.memory[this.pc]);
+                    this.pc++;
+                    break;
+                case 0x2B: // ROL
+                    Instructions.ROL(this);
+                    break;
+                case 0x2E: // ROR
+                    Instructions.ROR(this);
+                    break;
+                case 0x05: // TAP (Transfer Accumulator A to CCR)
+                    console.log("Executing TAP instruction");
+                    Instructions.TAP(this);
+                    break;
+                case 0x08: // INX (Increment Index Register X)
+                    console.log("Executing INX instruction");
+                    Instructions.INX(this);
+                    break;
+                default:
+                    console.error(`Unimplemented opcode: ${opcode.toString(16)}`);
+                    return false;
+            }
+        })();
+
+        if (result) {
+            console.log(`Post-execution state: A=${this.a.toString(16).padStart(2, '0').toUpperCase()}, B=${this.b.toString(16).padStart(2, '0').toUpperCase()}, X=${this.x.toString(16).padStart(4, '0').toUpperCase()}, PC=${this.pc.toString(16).padStart(4, '0').toUpperCase()}, SP=${this.sp.toString(16).padStart(4, '0').toUpperCase()}`);
+            console.log(`Flags - Z:${this.cc.z ? 'ON' : 'OFF'}, N:${this.cc.n ? 'ON' : 'OFF'}, C:${this.cc.c ? 'ON' : 'OFF'}, H:${this.cc.h ? 'ON' : 'OFF'}, I:${this.cc.i ? 'ON' : 'OFF'}, V:${this.cc.v ? 'ON' : 'OFF'}`);
         }
 
-        return true;
+        return result;
+    }
+
+    // Add memory dump functionality
+    dumpMemory(start = 0, end = 0xFFFF) {
+        console.log(`Memory dump from ${start.toString(16).padStart(4, '0').toUpperCase()} to ${end.toString(16).padStart(4, '0').toUpperCase()}:`);
+        for (let addr = start; addr <= end; addr += 16) {
+            const row = Array.from({ length: 16 }, (_, i) => this.memory[addr + i]?.toString(16).padStart(2, '0').toUpperCase() || '00').join(' ');
+            console.log(`${addr.toString(16).padStart(4, '0').toUpperCase()}: ${row}`);
+        }
     }
 }
 

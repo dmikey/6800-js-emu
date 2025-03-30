@@ -569,6 +569,14 @@ h3 {
     background-color: #844;
 }
 
+#dump-memory {
+    background-color: #5a9;
+}
+
+#dump-memory:hover {
+    background-color: #478;
+}
+
 /* Version display */
 .version {
     font-size: 14px;
