@@ -178,6 +178,21 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('data-dec').textContent = value.toString(10);
     }
 
+    // New function to set switch values based on a byte value
+    function setSwitchesFromValue(value) {
+        // Ensure value is a number
+        value = parseInt(value, 16);
+
+        // Update each switch based on corresponding bit
+        switches.forEach(switchEl => {
+            const bit = parseInt(switchEl.id.replace('switch', ''), 10);
+            switchEl.checked = ((value >> bit) & 1) === 1;
+        });
+
+        // Update the displayed values
+        updateDataValue();
+    }
+
     // Memory display
     function updateMemoryDisplay() {
         const memoryRowsContainer = document.getElementById('memory-rows');
@@ -238,6 +253,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     } else {
                         // Regular click selects the memory address
                         currentMemoryAddress = addr;
+
+                        // NEW: Update the switches to match the memory value
+                        const memValue = cpu.memory[addr];
+                        console.log(`Memory cell clicked: address=${addr.toString(16).padStart(4, '0').toUpperCase()}, value=${memValue.toString(16).padStart(2, '0').toUpperCase()}`);
+                        setSwitchesFromValue(memValue);
+
                         updateUI();
                     }
 
@@ -301,19 +322,6 @@ document.addEventListener('DOMContentLoaded', function () {
         setTimeout(() => {
             resetButton.classList.remove('button-flash');
         }, 200);
-    });
-
-    document.getElementById('load-button').addEventListener('click', function () {
-        const value = parseInt(document.getElementById('data-hex').textContent, 16);
-        const selectedReg = document.querySelector('input[name="register"]:checked').value;
-
-        if (selectedReg === 'a') {
-            cpu.a = value;
-        } else if (selectedReg === 'b') {
-            cpu.b = value;
-        }
-
-        updateUI();
     });
 
     // Memory navigation buttons
