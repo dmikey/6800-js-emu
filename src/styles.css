@@ -1040,7 +1040,8 @@ debug-actions {
     right: -320px;
     /* Start off-screen */
     width: 300px;
-    height: 100vh;
+    height: calc(100vh - 30px);
+    /* Subtract status bar height */
     background-color: #f5f5f5;
     box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
     z-index: 1000;
@@ -1048,6 +1049,8 @@ debug-actions {
     display: flex;
     flex-direction: column;
     overflow-y: auto;
+    padding-bottom: 30px;
+    /* Add padding at the bottom for status bar */
 }
 
 .side-panel.open {
@@ -1273,7 +1276,8 @@ debug-actions {
     left: 0;
     right: 0;
     height: 30px;
-    background-color: #333;
+    background-color: #222;
+    /* Darker background */
     color: #fff;
     display: flex;
     justify-content: space-between;
@@ -1282,14 +1286,20 @@ debug-actions {
     font-size: 13px;
     z-index: 1001;
     /* Above slide-out panels */
-    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.4);
+    /* Enhanced shadow */
     border-top: 1px solid #444;
 }
 
 .status-indicator {
     display: flex;
     align-items: center;
-    min-width: 80px;
+    min-width: 100px;
+    /* Increased from 80px */
+}
+
+.status-label {
+    font-weight: bold;
 }
 
 .status-dot {
@@ -1300,22 +1310,37 @@ debug-actions {
     background-color: #4a6;
     /* Green for ready */
     margin-right: 8px;
+    box-shadow: 0 0 5px rgba(74, 170, 102, 0.8);
+    /* Add glow */
 }
 
 .status-dot.running {
     background-color: #fb3;
     /* Yellow for running */
+    box-shadow: 0 0 5px rgba(255, 187, 51, 0.8);
+    /* Yellow glow */
 }
 
 .status-dot.paused {
     background-color: #f55;
     /* Red for paused at breakpoint */
+    box-shadow: 0 0 5px rgba(255, 85, 85, 0.8);
+    /* Red glow */
     animation: blink-status 1s infinite alternate;
 }
 
 .status-dot.error {
     background-color: #f33;
     /* Bright red for errors */
+    box-shadow: 0 0 5px rgba(255, 51, 51, 0.8);
+    /* Bright red glow */
+}
+
+.execution-time {
+    color: #8cf;
+    /* Light blue for timing info */
+    margin-left: 10px;
+    font-style: italic;
 }
 
 @keyframes blink-status {
