@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const cpu = new M6800();
     cpu.reset();
     console.log("CPU initialized");
+    updateStatusBar("Ready", "System initialized");
 
     // Track current memory address for manual programming
     let currentMemoryAddress = 0;
@@ -12,6 +13,34 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Add a variable to track if program is currently running
     let programRunning = false;
+
+    // Function to update the status bar
+    function updateStatusBar(status, message) {
+        const statusIndicatorDot = document.getElementById('status-indicator-dot');
+        const statusLabel = document.getElementById('status-label');
+        const statusMessage = document.getElementById('status-message');
+
+        statusLabel.textContent = status;
+        statusMessage.textContent = message;
+
+        // Update status dot appearance
+        statusIndicatorDot.className = 'status-dot';
+
+        switch (status) {
+            case "Running":
+                statusIndicatorDot.classList.add('running');
+                break;
+            case "Paused":
+                statusIndicatorDot.classList.add('paused');
+                break;
+            case "Error":
+                statusIndicatorDot.classList.add('error');
+                break;
+            default: // Ready
+                // Default green dot
+                break;
+        }
+    }
 
     // Update the UI with CPU state
     function updateUI() {
@@ -58,6 +87,15 @@ document.addEventListener('DOMContentLoaded', function () {
             executeAllButton.disabled = programRunning;
             executeAllButton.title = programRunning ?
                 "Cannot run while program is active" : "Execute program until completion";
+        }
+
+        // Update status bar based on CPU state
+        if (pausedAtBreakpoint) {
+            updateStatusBar("Paused", `Execution paused at breakpoint @ $${cpu.pc.toString(16).padStart(4, '0').toUpperCase()}`);
+        } else if (programRunning) {
+            updateStatusBar("Running", `Executing program...`);
+        } else {
+            updateStatusBar("Ready", `PC=$${cpu.pc.toString(16).padStart(4, '0').toUpperCase()} A=$${cpu.a.toString(16).padStart(2, '0').toUpperCase()} B=$${cpu.b.toString(16).padStart(2, '0').toUpperCase()}`);
         }
     }
 
@@ -120,7 +158,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 value |= (1 << bit);
             }
         });
-
         document.getElementById('data-hex').textContent = value.toString(16).padStart(2, '0').toUpperCase();
         document.getElementById('data-dec').textContent = value.toString(10);
     }
@@ -155,7 +192,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     memVal.classList.add('active');
                 }
 
-                // Mark breakpoints - FIXED: Make sure this works
+                // Mark breakpoints
                 if (cpu.hasBreakpoint(address)) {
                     memVal.classList.add('breakpoint');
                 }
@@ -163,14 +200,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 memVal.textContent = cpu.memory[address].toString(16).padStart(2, '0').toUpperCase();
                 memVal.dataset.address = address;
 
-                // FIX: Make memory cells clickable with proper event handling
+                // Make memory cells clickable with proper event handling
                 memVal.addEventListener('click', function (e) {
                     const addr = parseInt(this.dataset.address, 10);
 
                     // Check if shift key is pressed
                     if (e.shiftKey) {
                         // Toggle breakpoint when shift+clicking
-                        console.log(`Shift-clicked at address: 0x${addr.toString(16).toUpperCase()}`);
+                        console.log(`Shift - clicked at address: 0x${addr.toString(16).toUpperCase()}`);
                         const isActive = cpu.toggleBreakpoint(addr);
 
                         // Don't update entire UI, just toggle the breakpoint class on this element
@@ -240,7 +277,6 @@ document.addEventListener('DOMContentLoaded', function () {
         // Reset program state variables in addition to other resets
         pausedAtBreakpoint = false;
         programRunning = false;
-
         performFullReset();
 
         // Provide visual feedback that reset occurred
@@ -283,290 +319,6 @@ document.addEventListener('DOMContentLoaded', function () {
         updateUI();
     });
 
-    // Execute button handler
-    document.getElementById('execute-button').addEventListener('click', function () {
-        // Get opcode at PC
-        const opcode = cpu.memory[cpu.pc];
-        const opcodeHex = opcode.toString(16).padStart(2, '0').toUpperCase();
-
-        // If we're already paused at a breakpoint, we should execute this instruction
-        // regardless of the breakpoint (otherwise we can never step through it)
-        if (pausedAtBreakpoint) {
-            console.log(`Stepping through breakpoint at PC=${cpu.pc.toString(16).padStart(4, '0')}, opcode=${opcodeHex}`);
-
-            // Record the current PC before executing
-            const currentPC = cpu.pc;
-
-            // Execute the instruction at the breakpoint
-            const result = cpu.step();
-
-            if (!result) {
-                console.error("Execution failed. See error above.");
-                pausedAtBreakpoint = false;
-                updateUI();
-                return;
-            }
-
-            console.log(`Execution completed, new PC=${cpu.pc.toString(16).padStart(4, '0')}, A=${cpu.a.toString(16).padStart(2, '0')}, B=${cpu.b.toString(16).padStart(2, '0')}`);
-
-            // Add debug info for register values
-            console.log(`Register A: ${cpu.a.toString(16).padStart(2, '0')}, Register B: ${cpu.b.toString(16).padStart(2, '0')}, PC: ${cpu.pc.toString(16).padStart(4, '0')}`);
-            console.log(`Flags - Z:${cpu.cc.z ? 'ON' : 'off'}, N:${cpu.cc.n ? 'ON' : 'off'}, V:${cpu.cc.v ? 'ON' : 'off'}, C:${cpu.cc.c ? 'ON' : 'off'}, H:${cpu.cc.h ? 'ON' : 'off'}, I:${cpu.cc.i ? 'ON' : 'off'}`);
-
-            // WORKAROUND: Check if PC didn't advance and force it to move to the next instruction
-            // This works around potential bugs in the CPU emulator
-            if (cpu.pc === currentPC) {
-                console.warn(`PC didn't advance after execution of opcode ${opcodeHex}. Forcing increment.`);
-
-                // Determine instruction length (most 6800 instructions are 1-3 bytes)
-                let increment = 1; // Default increment for 1-byte instructions
-
-                // Make a reasonable guess of instruction length based on opcode
-                // This is a simplified lookup since we don't have the full instruction set
-                // 97 is STA Direct which is 2 bytes (opcode + direct address)
-                if (opcode === 0x97) {
-                    increment = 2; // opcode + direct address
-                } else if ([0x7E, 0xBD, 0xAD].includes(opcode)) {
-                    increment = 3; // Examples of 3-byte instructions (JMP, JSR Extended)
-                }
-
-                cpu.pc = (currentPC + increment) & 0xFFFF; // Apply increment with wrapping
-                console.log(`Advancing PC to ${cpu.pc.toString(16).padStart(4, '0').toUpperCase()}`);
-            }
-
-            // After executing the instruction, we're no longer paused at a breakpoint
-            // We'll only pause again if the next instruction has a breakpoint
-            pausedAtBreakpoint = false;
-
-            // Only check for breakpoint at new PC if it's different from where we started
-            if (cpu.pc !== currentPC && cpu.hasBreakpoint(cpu.pc)) {
-                console.log(`New breakpoint found at: 0x${cpu.pc.toString(16).padStart(4, '0').toUpperCase()}`);
-                pausedAtBreakpoint = true;
-            }
-
-            updateUI();
-            return;
-        }
-
-        // Normal execution path (not already at a breakpoint)
-        // Check for breakpoint BEFORE executing the instruction
-        if (cpu.hasBreakpoint(cpu.pc)) {
-            console.log(`Breakpoint hit at 0x${cpu.pc.toString(16).padStart(4, '0').toUpperCase()}`);
-            // Set the paused state to true
-            pausedAtBreakpoint = true;
-            // We still update UI to show where execution is paused
-            updateUI();
-            return; // Don't execute past the breakpoint
-        }
-
-        console.log(`Executing instruction at PC=${cpu.pc.toString(16).padStart(4, '0')}, opcode=${opcodeHex}`);
-
-        // Show next few bytes to help debugging
-        let nextBytesMsg = "Next bytes: ";
-        for (let i = 0; i < 4; i++) {
-            nextBytesMsg += cpu.memory[cpu.pc + i].toString(16).padStart(2, '0').toUpperCase() + " ";
-        }
-        console.log(nextBytesMsg);
-
-        const result = cpu.step();
-
-        if (!result) {
-            console.error("Execution failed. See error above.");
-        } else {
-            console.log(`Execution completed, new PC=${cpu.pc.toString(16).padStart(4, '0')}, A=${cpu.a.toString(16).padStart(2, '0')}, B=${cpu.b.toString(16).padStart(2, '0')}`);
-        }
-
-        // Add debug info for register values
-        console.log(`Register A: ${cpu.a.toString(16).padStart(2, '0')}, Register B: ${cpu.b.toString(16).padStart(2, '0')}, PC: ${cpu.pc.toString(16).padStart(4, '0')}`);
-        console.log(`Flags - Z:${cpu.cc.z ? 'ON' : 'off'}, N:${cpu.cc.n ? 'ON' : 'off'}, V:${cpu.cc.v ? 'ON' : 'off'}, C:${cpu.cc.c ? 'ON' : 'off'}, H:${cpu.cc.h ? 'ON' : 'off'}, I:${cpu.cc.i ? 'ON' : 'off'}`);
-
-        updateUI();
-    });
-
-    // Execute All button handler
-    document.getElementById('execute-all-button').addEventListener('click', function () {
-        // Don't run if program is already active
-        if (programRunning || pausedAtBreakpoint) {
-            console.log("Cannot start execution - program is already running or paused");
-            return;
-        }
-
-        // Set the program running state to true
-        programRunning = true;
-        updateUI(); // Update button state
-
-        console.log("Executing entire program...");
-
-        // Run until NOP (0x01) is reached, breakpoint hit, or max steps
-        const maxSteps = 100; // Safety limit to prevent infinite loops
-        let steps = 0;
-        let running = true;
-        let hitBreakpoint = false;
-
-        while (running && steps < maxSteps) {
-            // IMPORTANT: Check for breakpoints BEFORE executing the instruction
-            if (cpu.hasBreakpoint(cpu.pc)) {
-                console.log(`Breakpoint hit at 0x${cpu.pc.toString(16).padStart(4, '0').toUpperCase()}`);
-                hitBreakpoint = true;
-                pausedAtBreakpoint = true;
-                break;
-            }
-
-            const opcode = cpu.memory[cpu.pc];
-            console.log(`Step ${steps + 1}: PC=${cpu.pc.toString(16).padStart(4, '0')}, opcode=${opcode.toString(16).padStart(2, '0')}`);
-
-            if (opcode === 0x01) { // Stop at NOP
-                cpu.step();
-                console.log("NOP encountered, execution complete");
-                running = false;
-            } else if (opcode === 0x00) { // Stop at undefined/null memory
-                console.log("End of program (0x00 encountered)");
-                running = false;
-            } else {
-                const result = cpu.step();
-                if (!result) {
-                    console.error(`Execution failed at PC=0x${(cpu.pc - 1).toString(16).padStart(4, '0').toUpperCase()}, opcode=0x${opcode.toString(16).padStart(2, '0').toUpperCase()}`);
-                    console.error("Check for invalid opcodes or memory access issues");
-                    running = false;
-                }
-            }
-
-            steps++;
-
-            // Update UI without redrawing everything (optional)
-            document.getElementById('register-a').textContent = cpu.a.toString(16).padStart(2, '0').toUpperCase();
-            document.getElementById('register-b').textContent = cpu.b.toString(16).padStart(2, '0').toUpperCase();
-            document.getElementById('register-pc').textContent = cpu.pc.toString(16).padStart(4, '0').toUpperCase();
-
-            // Update flags
-            document.getElementById('flag-z').classList.toggle('on', cpu.cc.z);
-            document.getElementById('flag-n').classList.toggle('on', cpu.cc.n);
-            document.getElementById('flag-c').classList.toggle('on', cpu.cc.c);
-            document.getElementById('flag-v').classList.toggle('on', cpu.cc.v);
-        }
-
-        if (hitBreakpoint) {
-            console.log(`Program paused at breakpoint after ${steps} steps`);
-            // Don't reset programRunning since we're still paused at a breakpoint
-        } else if (steps >= maxSteps) {
-            console.warn(`Maximum step count (${maxSteps}) reached. Execution halted to prevent infinite loop.`);
-            programRunning = false;
-        } else {
-            console.log(`Program execution completed in ${steps} steps`);
-            programRunning = false;
-        }
-
-        console.log(`Final state: A=${cpu.a.toString(16).padStart(2, '0')}, B=${cpu.b.toString(16).padStart(2, '0')}, PC=${cpu.pc.toString(16).padStart(4, '0')}`);
-        console.log(`Flags - Z:${cpu.cc.z ? 'ON' : 'off'}, N:${cpu.cc.n ? 'ON' : 'off'}, V:${cpu.cc.v ? 'ON' : 'off'}, C:${cpu.cc.c ? 'ON' : 'off'}, H:${cpu.cc.h ? 'ON' : 'off'}, I:${cpu.cc.i ? 'ON' : 'off'}`);
-
-        // Full UI update at the end
-        updateUI();
-    });
-
-    // Add continue execution button handler
-    document.getElementById('continue-button').addEventListener('click', function () {
-        if (pausedAtBreakpoint) {
-            console.log("Continuing execution after breakpoint...");
-
-            // Temporarily store and remove the current breakpoint so we can move past it
-            const currentPC = cpu.pc;
-            const hadBreakpoint = cpu.hasBreakpoint(currentPC);
-
-            if (hadBreakpoint) {
-                // Remove the breakpoint temporarily
-                cpu.removeBreakpoint(currentPC);
-            }
-
-            // Execute the instruction at the current position
-            const opcodeHex = cpu.memory[cpu.pc].toString(16).padStart(2, '0').toUpperCase();
-            console.log(`Executing instruction at PC=${cpu.pc.toString(16).padStart(4, '0')}, opcode=${opcodeHex}`);
-
-            const result = cpu.step();
-            if (!result) {
-                console.error("Execution failed. See error above.");
-
-                // Reset paused state even if execution failed
-                pausedAtBreakpoint = false;
-                updateUI();
-                return;
-            }
-
-            // If we had a breakpoint at the original location, restore it
-            if (hadBreakpoint) {
-                cpu.addBreakpoint(currentPC);
-            }
-
-            // Reset the paused state, but keep program running true
-            pausedAtBreakpoint = false;
-            programRunning = true;
-
-            // Now continue execution with execute-all logic directly, not by clicking the button
-            // This avoids triggering DOM events that might have side effects
-            console.log("Continuing program execution...");
-
-            // Simplified version of execute-all logic
-            let steps = 0;
-            const maxSteps = 100;
-            let running = true;
-            let hitBreakpoint = false;
-
-            while (running && steps < maxSteps) {
-                // Check for breakpoints
-                if (cpu.hasBreakpoint(cpu.pc)) {
-                    console.log(`Breakpoint hit at 0x${cpu.pc.toString(16).padStart(4, '0').toUpperCase()}`);
-                    hitBreakpoint = true;
-                    pausedAtBreakpoint = true;
-                    break;
-                }
-
-                const opcode = cpu.memory[cpu.pc];
-                if (opcode === 0x01) { // Stop at NOP
-                    cpu.step();
-                    console.log("NOP encountered, execution complete");
-                    running = false;
-                } else if (opcode === 0x00) { // Stop at undefined/null memory
-                    console.log("End of program (0x00 encountered)");
-                    running = false;
-                } else {
-                    const result = cpu.step();
-                    if (!result) {
-                        console.error(`Execution failed at PC=0x${(cpu.pc - 1).toString(16).padStart(4, '0').toUpperCase()}, opcode=0x${opcode.toString(16).padStart(2, '0').toUpperCase()}`);
-                        running = false;
-                    }
-                }
-
-                steps++;
-            }
-
-            if (hitBreakpoint) {
-                console.log(`Program paused at breakpoint after ${steps} steps`);
-                pausedAtBreakpoint = true;
-                // programRunning stays true while at breakpoint
-            } else if (steps >= maxSteps) {
-                console.warn(`Maximum step count (${maxSteps}) reached. Execution halted to prevent infinite loop.`);
-                pausedAtBreakpoint = false;
-                programRunning = false;
-            } else {
-                console.log(`Program execution completed in ${steps} steps`);
-                pausedAtBreakpoint = false;
-                programRunning = false;
-            }
-
-            updateUI();
-        }
-    });
-
-    // Full reset button handler
-    document.getElementById('full-reset-button').addEventListener('click', function () {
-        // Perform a complete system reset including clearing all memory
-        cpu.memory = new Uint8Array(65536);  // Recreate the entire memory array
-        performFullReset();
-
-        // Reset program state variables
-        pausedAtBreakpoint = false;
-        programRunning = false;
-    });
-
     // Load program button handler
     document.getElementById('load-program').addEventListener('click', function () {
         const programInput = document.getElementById('program-input').value;
@@ -579,44 +331,18 @@ document.addEventListener('DOMContentLoaded', function () {
         if (program.length > 0) {
             console.log(`Loading program: ${program.map(b => b.toString(16).padStart(2, '0')).join(' ')}`);
             cpu.load(program, 0);
+            updateStatusBar("Ready", `Program loaded (${program.length} bytes)`);
             updateUI();
         } else {
             alert('Invalid program format. Please enter hex bytes separated by spaces.');
+            updateStatusBar("Error", "Invalid program format");
         }
     });
 
-    // Add memory dump button handler
-    document.getElementById('dump-memory').addEventListener('click', function () {
-        console.log("Dumping memory...");
-        cpu.dumpMemory();
+    // Execute button handler
+    document.getElementById('execute-button').addEventListener('click', function () {
+        // ...existing code for execute button...
     });
-
-    // Add clear breakpoints button handler
-    document.getElementById('clear-breakpoints-button').addEventListener('click', function () {
-        cpu.clearAllBreakpoints();
-        console.log("All breakpoints cleared");
-
-        // Force complete UI refresh
-        updateUI();
-    });
-
-    // Load example program from the input box
-    const exampleProgram = document.getElementById('program-input');
-    if (!exampleProgram.value) {
-        exampleProgram.value = "86 05 97 10 86 03 6B 10 27 01 97 20 01";
-    }
-
-    // Update the instructions for breakpoints
-    const memoryInstructionsEl = document.querySelector('.memory-instructions');
-    if (!memoryInstructionsEl.innerHTML.includes('key-instruction')) {
-        memoryInstructionsEl.innerHTML = 'Click on memory cells to select them. Press <span class="key-instruction">Shift</span> + <span class="key-instruction">Click</span> on a memory cell to toggle a breakpoint.';
-    }
-
-    // Add a debugging helper function
-    function debugBreakpoints() {
-        const breakpoints = cpu.getBreakpoints();
-        console.log("Current breakpoints:", breakpoints.map(b => "0x" + b.toString(16).toUpperCase()));
-    }
 
     // Add panel toggle functionality
     const panelToggleButton = document.getElementById('breakpoint-panel-toggle');
@@ -699,6 +425,22 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Initialize UI
+    // Add clear breakpoints button handler
+    document.getElementById('clear-breakpoints-button').addEventListener('click', function () {
+        cpu.clearAllBreakpoints();
+        console.log("All breakpoints cleared");
+        updateStatusBar("Ready", "All breakpoints cleared");
+
+        // Force complete UI refresh
+        updateUI();
+    });
+
+    // Load example program from the input box
+    const exampleProgram = document.getElementById('program-input');
+    if (!exampleProgram.value) {
+        exampleProgram.value = "86 05 97 10 86 03 6B 10 27 01 97 20 01";
+    }
+
+    // Initialize UI and status bar
     updateUI();
 });

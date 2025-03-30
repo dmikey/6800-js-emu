@@ -28,6 +28,8 @@ body {
     flex-direction: column;
     flex: 1;
     overflow: hidden;
+    padding-bottom: 35px;
+    /* Add space for status bar */
 }
 
 h1 {
@@ -907,6 +909,8 @@ debug-actions {
     border-top: 1px solid #ccc;
     color: #666;
     font-size: 12px;
+    margin-bottom: 30px;
+    /* Make room for status bar */
 }
 
 .footer-section a {
@@ -1260,4 +1264,77 @@ debug-actions {
     .panel-toggle.program-toggle {
         top: calc(50% + 100px);
     }
+}
+
+/* Status bar */
+.status-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    background-color: #333;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+    font-size: 13px;
+    z-index: 1001;
+    /* Above slide-out panels */
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.3);
+    border-top: 1px solid #444;
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    min-width: 80px;
+}
+
+.status-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #4a6;
+    /* Green for ready */
+    margin-right: 8px;
+}
+
+.status-dot.running {
+    background-color: #fb3;
+    /* Yellow for running */
+}
+
+.status-dot.paused {
+    background-color: #f55;
+    /* Red for paused at breakpoint */
+    animation: blink-status 1s infinite alternate;
+}
+
+.status-dot.error {
+    background-color: #f33;
+    /* Bright red for errors */
+}
+
+@keyframes blink-status {
+    from {
+        opacity: 0.6;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.status-message {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: right;
+    font-family: 'Courier New', monospace;
+    max-width: calc(100% - 100px);
+    color: #bbb;
 }
