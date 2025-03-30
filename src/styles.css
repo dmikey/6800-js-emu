@@ -322,6 +322,68 @@ h3 {
     transform: translateY(1px);
 }
 
+/* Memory navigation */
+.memory-navigation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
+    gap: 8px;
+}
+
+.memory-navigation .action-button {
+    margin: 0;
+    padding: 2px 8px;
+    font-size: 16px;
+    min-width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.memory-navigation .nav-button {
+    background-color: #579;
+    width: 32px;
+}
+
+.memory-navigation .add-button {
+    background-color: #5a5;
+    font-weight: bold;
+    font-size: 18px;
+    width: 32px;
+}
+
+.memory-navigation .add-button:hover {
+    background-color: #494;
+}
+
+.memory-navigation .remove-button {
+    background-color: #a55;
+    font-weight: bold;
+    font-size: 18px;
+    width: 32px;
+}
+
+.memory-navigation .remove-button:hover {
+    background-color: #944;
+}
+
+.memory-navigation .remove-button:disabled {
+    background-color: #caa;
+    cursor: not-allowed;
+}
+
+#page-indicator {
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 4px 10px;
+    border-radius: 4px;
+    min-width: 100px;
+    text-align: center;
+}
+
 /* Register selector buttons */
 .reg-switches {
     display: flex;

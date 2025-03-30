@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', function () {
     let pausedAtBreakpoint = false;
     let programRunning = false;
     let lastExecutionTime = null;
+    let currentPage = 0; // Start at page 0
+    let totalPages = 1; // Initially, only one page exists
 
     // Initialize CPU
     const cpu = new M6800();
@@ -198,9 +200,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const memoryRowsContainer = document.getElementById('memory-rows');
         memoryRowsContainer.innerHTML = '';
 
-        // Show 8 rows of memory (0x00-0x7F)
+        // Calculate the starting address for the current page
+        const startAddress = currentPage * 128; // 128 bytes per page
+        const endAddress = startAddress + 128; // End address for the page
+
         for (let row = 0; row < 8; row++) {
-            const rowAddress = row * 16;
+            const rowAddress = startAddress + row * 16;
             const memoryRow = document.createElement('div');
             memoryRow.classList.add('memory-row');
 
@@ -231,38 +236,27 @@ document.addEventListener('DOMContentLoaded', function () {
                 memVal.textContent = cpu.memory[address].toString(16).padStart(2, '0').toUpperCase();
                 memVal.dataset.address = address;
 
-                // Make memory cells clickable with proper event handling
+                // Make memory cells clickable
                 memVal.addEventListener('click', function (e) {
                     const addr = parseInt(this.dataset.address, 10);
 
-                    // Check if shift key is pressed
                     if (e.shiftKey) {
-                        // Toggle breakpoint when shift+clicking
-                        console.log(`Shift - clicked at address: 0x${addr.toString(16).toUpperCase()}`);
+                        // Toggle breakpoint
                         const isActive = cpu.toggleBreakpoint(addr);
-
-                        // Don't update entire UI, just toggle the breakpoint class on this element
                         if (isActive) {
                             this.classList.add('breakpoint');
                         } else {
                             this.classList.remove('breakpoint');
                         }
-
-                        // Only update the breakpoint display
                         updateBreakpointDisplay();
                     } else {
-                        // Regular click selects the memory address
+                        // Select memory address
                         currentMemoryAddress = addr;
-
-                        // NEW: Update the switches to match the memory value
                         const memValue = cpu.memory[addr];
-                        console.log(`Memory cell clicked: address=${addr.toString(16).padStart(4, '0').toUpperCase()}, value=${memValue.toString(16).padStart(2, '0').toUpperCase()}`);
                         setSwitchesFromValue(memValue);
-
                         updateUI();
                     }
 
-                    // Prevent event bubbling
                     e.stopPropagation();
                 });
 
@@ -271,6 +265,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
             memoryRowsContainer.appendChild(memoryRow);
         }
+
+        // Update page navigation display
+        document.getElementById('page-indicator').textContent = `Page ${currentPage + 1} of ${totalPages}`;
+
+        // Update button states
+        document.getElementById('prev-page').disabled = (currentPage === 0);
+        document.getElementById('next-page').disabled = (currentPage === totalPages - 1);
+        document.getElementById('remove-page').disabled = (totalPages === 1);
     }
 
     // Full reset of application state
@@ -771,6 +773,49 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Force complete UI refresh
         updateUI();
+    });
+
+    // Add page navigation button handlers
+    document.getElementById('prev-page').addEventListener('click', function () {
+        if (currentPage > 0) {
+            currentPage--;
+            updateMemoryDisplay();
+        }
+    });
+
+    document.getElementById('next-page').addEventListener('click', function () {
+        if (currentPage < totalPages - 1) {
+            currentPage++;
+            updateMemoryDisplay();
+        }
+    });
+
+    document.getElementById('add-page').addEventListener('click', function () {
+        if (totalPages * 128 < cpu.memory.length) {
+            totalPages++;
+            currentPage = totalPages - 1; // Switch to the new page
+            updateMemoryDisplay();
+            console.log(`Added new page. Total pages: ${totalPages}`);
+        } else {
+            alert('Maximum memory limit reached!');
+        }
+    });
+
+    document.getElementById('remove-page').addEventListener('click', function () {
+        // Don't allow removing the last page
+        if (totalPages > 1) {
+            totalPages--;
+
+            // If we were on the last page that's being removed, go to the new last page
+            if (currentPage >= totalPages) {
+                currentPage = totalPages - 1;
+            }
+
+            updateMemoryDisplay();
+            console.log(`Removed a page. Total pages: ${totalPages}`);
+        } else {
+            alert('Cannot remove the last memory page!');
+        }
     });
 
     // Load example program from the input box
