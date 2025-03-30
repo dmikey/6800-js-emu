@@ -60,6 +60,38 @@ The browser interface provides a complete emulation environment:
 3. **Monitor State**: View register values, flags, and memory contents in real-time
 4. **Manipulate Memory**: Click on memory locations to select them, then use the data switches to set values
 
+### Example Program
+
+The following example program adds two numbers and stores the result:
+
+```
+86 05    ; LDA #$05    Load accumulator A with the value 5
+97 10    ; STA $10     Store accumulator A to memory location $10
+86 03    ; LDA #$03    Load accumulator A with the value 3
+6B 10    ; ADD $10     Add the value at memory location $10 to accumulator A
+97 20    ; STA $20     Store the result to memory location $20
+01       ; NOP         No operation (program end)
+```
+
+### Node.js Interface
+
+You can also run programs directly from the command line:
+
+```bash
+node main.js example.txt
+```
+
+## Project Structure
+
+- `emulator.js` - Core emulation logic for Node.js
+- `browser-emulator.js` - Browser-compatible version of the emulator
+- `instructions.js` - Implementation of 6800 CPU instructions
+- `breadboard.js` - UI logic for the browser interface
+- `index.html` - Web interface
+- `styles.css` - UI styling
+- `server.js` - Simple Express server for web access
+- `main.js` - Command-line entry point
+
 ## Feature Checklist
 
 ### 1. **Enhance Debugging and Logging**
@@ -113,3 +145,49 @@ The browser interface provides a complete emulation environment:
 
 ### 13. **Cross-Platform Compatibility**
    - [x] Ensure the emulator works seamlessly in different environments (e.g., browsers, Node.js, or as a standalone desktop app using Electron).
+
+## Supported Instructions
+
+The emulator currently supports the following 6800 instructions:
+
+| Mnemonic | Description                             | Opcode |
+|----------|-----------------------------------------|--------|
+| LDA      | Load Accumulator A                      | 86, 96 |
+| STA      | Store Accumulator A                     | 97     |
+| LDX      | Load Index Register X                   | 8E     |
+| STX      | Store Index Register X                  | 10     |
+| ADD      | Add Memory to Accumulator A             | 6B     |
+| SUB      | Subtract Memory from Accumulator A      | 90     |
+| INC      | Increment Memory                        | 1C     |
+| DEC      | Decrement Memory                        | 1A     |
+| BRA      | Branch Always                           | 20     |
+| BEQ      | Branch if Equal (Z=1)                   | 27     |
+| BNE      | Branch if Not Equal (Z=0)               | 26     |
+| NOP      | No Operation                            | 01     |
+| AND      | Logical AND                             | 24     |
+| ORA      | Logical OR                              | 2A     |
+| EOR      | Logical Exclusive OR                    | 28     |
+| ROL      | Rotate Left                             | 2B     |
+| ROR      | Rotate Right                            | 2E     |
+| TAP      | Transfer A to CCR                       | 05     |
+| INX      | Increment Index Register                | 08     |
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+
+## Contributing
+
+Contributions are welcome! Feel free to:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## Acknowledgments
+
+- [Motorola 6800 Programming Reference](http://www.sbprojects.net/sbasm/6800.php)
+- [6800 Assembly Language Programming](https://archive.org/details/6800AssemblyLanguageProgramming1979LanceALeventhal)
+- [Retrocomputing Stack Exchange](https://retrocomputing.stackexchange.com/)
