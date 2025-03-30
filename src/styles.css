@@ -674,6 +674,24 @@ h3 {
     padding-bottom: 3px;
 }
 
+/* Add styles for clear console button and debug actions */
+.debug-actions {
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+#clear-console {
+    background-color: #777;
+    font-size: 14px;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+}
+
+#clear-console:hover {
+    background-color: #666;
+}
+
 .debug-actions {
     margin-top: 10px;
     display: flex;

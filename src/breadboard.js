@@ -198,11 +198,17 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         updateDataValue();
 
-        // Clear debug console
+        // Add log message without clearing debug console
         const debugConsole = document.getElementById('debug-console');
         if (debugConsole) {
-            debugConsole.innerHTML = '';
-            debugConsole.appendChild(document.createElement('div')).textContent = '> System reset complete';
+            // Append reset message instead of clearing console
+            const resetMessage = document.createElement('div');
+            resetMessage.textContent = '> System reset complete';
+            resetMessage.style.color = '#ffcc00'; // Highlight message
+            debugConsole.appendChild(resetMessage);
+
+            // Scroll to the bottom
+            debugConsole.scrollTop = debugConsole.scrollHeight;
         }
 
         // Update UI to show reset state

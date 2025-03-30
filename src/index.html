@@ -247,6 +247,9 @@
 
         <div class="debug-section">
             <h3>Debug Console</h3>
+            <div class="debug-actions">
+                <button id="clear-console" class="action-button">Clear Console</button>
+            </div>
             <div id="debug-console"></div>
 
             <div class="breakpoint-management">
@@ -291,8 +294,8 @@
                     logLine.textContent = '> ' + message;
                     debugConsole.appendChild(logLine);
 
-                    // Keep only the last 10 messages
-                    while (debugConsole.children.length > 10) {
+                    // Keep a reasonable number of messages (increased from 10 to 500)
+                    while (debugConsole.children.length > 500) {
                         debugConsole.removeChild(debugConsole.firstChild);
                     }
 
@@ -301,6 +304,20 @@
                 }
                 originalConsoleLog.apply(console, arguments);
             };
+
+            // Add an event listener for the clear console button
+            document.addEventListener('DOMContentLoaded', function () {
+                document.getElementById('clear-console').addEventListener('click', function () {
+                    const debugConsole = document.getElementById('debug-console');
+                    if (debugConsole) {
+                        debugConsole.innerHTML = '';
+                        const clearMessage = document.createElement('div');
+                        clearMessage.textContent = '> Console cleared';
+                        clearMessage.style.fontStyle = 'italic';
+                        debugConsole.appendChild(clearMessage);
+                    }
+                });
+            });
         })();
     </script>
 
