@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6800 Breadboard Simulator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="breadboard">
+        <h1>6800 Breadboard Simulator</h1>
+
+        <div class="control-section">
+            <div class="registers">
+                <div class="register">
+                    <label>Accumulator A:</label>
+                    <span id="register-a">00</span>
+                </div>
+                <div class="register">
+                    <label>Accumulator B:</label>
+                    <span id="register-b">00</span>
+                </div>
+                <div class="register">
+                    <label>Index Register X:</label>
+                    <span id="register-x">0000</span>
+                </div>
+                <div class="register">
+                    <label>Program Counter:</label>
+                    <span id="register-pc">0000</span>
+                </div>
+                <div class="register">
+                    <label>Stack Pointer:</label>
+                    <span id="register-sp">FFFF</span>
+                </div>
+            </div>
+
+            <div class="flags">
+                <div class="flag">
+                    <label>Z:</label>
+                    <div class="led" id="flag-z"></div>
+                </div>
+                <div class="flag">
+                    <label>N:</label>
+                    <div class="led" id="flag-n"></div>
+                </div>
+                <div class="flag">
+                    <label>C:</label>
+                    <div class="led" id="flag-c"></div>
+                </div>
+                <div class="flag">
+                    <label>V:</label>
+                    <div class="led" id="flag-v"></div>
+                </div>
+                <div class="flag">
+                    <label>H:</label>
+                    <div class="led" id="flag-h"></div>
+                </div>
+                <div class="flag">
+                    <label>I:</label>
+                    <div class="led" id="flag-i"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="switches-section">
+            <div class="data-switches">
+                <h3>Data Input</h3>
+                <div class="switches">
+                    <div class="switch" data-bit="7">
+                        <input type="checkbox" id="switch7" class="switch-input">
+                        <label for="switch7" class="switch-label"></label>
+                        <div class="bit-label">7</div>
+                    </div>
+                    <div class="switch" data-bit="6">
+                        <input type="checkbox" id="switch6" class="switch-input">
+                        <label for="switch6" class="switch-label"></label>
+                        <div class="bit-label">6</div>
+                    </div>
+                    <div class="switch" data-bit="5">
+                        <input type="checkbox" id="switch5" class="switch-input">
+                        <label for="switch5" class="switch-label"></label>
+                        <div class="bit-label">5</div>
+                    </div>
+                    <div class="switch" data-bit="4">
+                        <input type="checkbox" id="switch4" class="switch-input">
+                        <label for="switch4" class="switch-label"></label>
+                        <div class="bit-label">4</div>
+                    </div>
+                    <div class="switch" data-bit="3">
+                        <input type="checkbox" id="switch3" class="switch-input">
+                        <label for="switch3" class="switch-label"></label>
+                        <div class="bit-label">3</div>
+                    </div>
+                    <div class="switch" data-bit="2">
+                        <input type="checkbox" id="switch2" class="switch-input">
+                        <label for="switch2" class="switch-label"></label>
+                        <div class="bit-label">2</div>
+                    </div>
+                    <div class="switch" data-bit="1">
+                        <input type="checkbox" id="switch1" class="switch-input">
+                        <label for="switch1" class="switch-label"></label>
+                        <div class="bit-label">1</div>
+                    </div>
+                    <div class="switch" data-bit="0">
+                        <input type="checkbox" id="switch0" class="switch-input">
+                        <label for="switch0" class="switch-label"></label>
+                        <div class="bit-label">0</div>
+                    </div>
+                </div>
+                <div class="data-display">
+                    <span class="hex-value" id="data-hex">00</span>
+                    <span class="dec-value" id="data-dec">0</span>
+                </div>
+            </div>
+
+            <div class="register-select">
+                <h3>Register/Memory Select</h3>
+                <div class="memory-address-controls">
+                    <div class="memory-address">
+                        <label>Address:</label>
+                        <span id="memory-address">0000</span>
+                    </div>
+                    <div class="memory-value">
+                        <label>Value:</label>
+                        <span id="memory-value">00</span>
+                    </div>
+                    <div class="address-buttons">
+                        <button id="prev-addr" class="address-button">&lt;</button>
+                        <button id="next-addr" class="address-button">&gt;</button>
+                    </div>
+                    <button id="store-to-memory" class="action-button">Store to Memory</button>
+                </div>
+
+                <div class="reg-switches">
+                    <div class="reg-switch">
+                        <input type="radio" id="reg-a" name="register" value="a" checked>
+                        <label for="reg-a">A</label>
+                    </div>
+                    <div class="reg-switch">
+                        <input type="radio" id="reg-b" name="register" value="b">
+                        <label for="reg-b">B</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button id="load-button" class="action-button">Load to Register</button>
+                <button id="execute-button" class="action-button">Execute Step</button>
+                <button id="execute-all-button" class="action-button">Execute All</button>
+                <button id="reset-button" class="action-button">Reset</button>
+                <button id="full-reset-button" class="action-button">System Reset</button>
+            </div>
+        </div>
+
+        <div class="memory-section">
+            <h3>Memory</h3>
+            <div class="memory-display">
+                <div class="memory-row header">
+                    <span class="addr"></span>
+                    <span class="mem-val">00</span>
+                    <span class="mem-val">01</span>
+                    <span class="mem-val">02</span>
+                    <span class="mem-val">03</span>
+                    <span class="mem-val">04</span>
+                    <span class="mem-val">05</span>
+                    <span class="mem-val">06</span>
+                    <span class="mem-val">07</span>
+                    <span class="mem-val">08</span>
+                    <span class="mem-val">09</span>
+                    <span class="mem-val">0A</span>
+                    <span class="mem-val">0B</span>
+                    <span class="mem-val">0C</span>
+                    <span class="mem-val">0D</span>
+                    <span class="mem-val">0E</span>
+                    <span class="mem-val">0F</span>
+                </div>
+                <div id="memory-rows">
+                    <!-- Memory rows will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <div class="program-section">
+            <h3>Program</h3>
+            <textarea id="program-input" placeholder="Enter program bytes in hex (e.g., 86 05 97 10...)"></textarea>
+            <button id="load-program">Load Program</button>
+        </div>
+
+        <div class="debug-section">
+            <h3>Debug Console</h3>
+            <div id="debug-console"></div>
+        </div>
+    </div>
+
+    <script>
+        // Add this script to redirect console.log to our debug console
+        (function () {
+            const originalConsoleLog = console.log;
+            console.log = function () {
+                const debugConsole = document.getElementById('debug-console');
+                if (debugConsole) {
+                    const message = Array.from(arguments).map(arg =>
+                        typeof arg === 'object' ? JSON.stringify(arg) : String(arg)
+                    ).join(' ');
+
+                    const logLine = document.createElement('div');
+                    logLine.textContent = '> ' + message;
+                    debugConsole.appendChild(logLine);
+
+                    // Keep only the last 10 messages
+                    while (debugConsole.children.length > 10) {
+                        debugConsole.removeChild(debugConsole.firstChild);
+                    }
+
+                    // Scroll to the bottom
+                    debugConsole.scrollTop = debugConsole.scrollHeight;
+                }
+                originalConsoleLog.apply(console, arguments);
+            };
+        })();
+    </script>
+
+    <script src="browser-emulator.js"></script>
+    <script src="breadboard.js"></script>
+</body>
+
+</html>
