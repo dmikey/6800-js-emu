@@ -5,8 +5,6 @@
 
 A Motorola 6800 microprocessor emulator written in JavaScript with both browser and Node.js support.
 
-![Emulator Screenshot](https://via.placeholder.com/800x400?text=6800+Emulator+Screenshot)
-
 ## Overview
 
 This project implements a functional emulator for the Motorola 6800 microprocessor, featuring:
