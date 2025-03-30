@@ -2,66 +2,86 @@ body {
     font-family: 'Arial', sans-serif;
     background-color: #f0f0f0;
     margin: 0;
-    padding: 20px;
-    line-height: 1.4;
+    padding: 0;
+    /* Remove body padding */
+    line-height: 1.3;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .breadboard {
     background-color: #e0e0e0;
-    border: 2px solid #888;
-    border-radius: 12px;
-    padding: 25px;
-    max-width: 1100px;
+    border: none;
+    /* Remove border */
+    border-radius: 0;
+    /* Remove border radius */
+    padding: 8px;
+    /* Reduce padding */
+    max-width: 100%;
+    /* Full width */
+    width: 100%;
     margin: 0 auto;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: none;
+    /* Remove outer shadow */
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
 }
 
 h1 {
     text-align: center;
     margin-top: 0;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     color: #333;
-    font-size: 28px;
+    font-size: 22px;
     text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.8);
 }
 
 h3 {
     margin-top: 0;
-    margin-bottom: 15px;
+    margin-bottom: 8px;
     color: #444;
-    font-size: 18px;
+    font-size: 15px;
     border-bottom: 1px solid #aaa;
-    padding-bottom: 5px;
+    padding-bottom: 3px;
 }
 
 /* Control section with registers and flags */
 .control-section {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 25px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+    /* Slightly reduced */
     background-color: #f8f8f8;
-    padding: 20px;
-    border-radius: 10px;
+    padding: 12px;
+    border-radius: 8px;
     box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.1);
     border: 1px solid #ddd;
 }
 
 .registers {
-    flex: 2;
+    flex: 1;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
 }
 
 .register {
-    margin-bottom: 10px;
+    margin-bottom: 4px;
     display: flex;
     align-items: center;
 }
 
 .register label {
     font-weight: bold;
-    width: 140px;
+    width: 110px;
     display: inline-block;
     color: #333;
     cursor: help;
+    font-size: 13px;
 }
 
 .register span {
@@ -69,11 +89,11 @@ h3 {
     font-family: 'Courier New', monospace;
     background-color: #000;
     color: #0f0;
-    padding: 6px 10px;
+    padding: 3px 6px;
     border-radius: 4px;
     min-width: 50px;
     text-align: center;
-    font-size: 18px;
+    font-size: 15px;
     border: 1px solid #444;
     letter-spacing: 1px;
     box-shadow: inset 0 0 5px rgba(0, 255, 0, 0.2);
@@ -82,14 +102,14 @@ h3 {
 /* Flags section */
 .flags {
     display: flex;
-    flex: 1;
+    flex-wrap: wrap;
     justify-content: flex-end;
     align-items: flex-start;
-    gap: 18px;
-    padding: 10px;
+    gap: 10px;
+    padding: 8px;
     background-color: rgba(0, 0, 0, 0.05);
-    border-radius: 8px;
-    margin-left: 20px;
+    border-radius: 6px;
+    margin-left: 10px;
 }
 
 .flag {
@@ -100,8 +120,8 @@ h3 {
 
 .flag label {
     font-weight: bold;
-    margin-bottom: 8px;
-    font-size: 16px;
+    margin-bottom: 4px;
+    font-size: 13px;
     color: #333;
     cursor: help;
 }
@@ -124,16 +144,19 @@ h3 {
 /* Switches section */
 .switches-section {
     display: flex;
-    justify-content: space-between;
-    gap: 25px;
-    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 10px;
+    /* Slightly reduced */
+    margin-bottom: 10px;
+    /* Slightly reduced */
 }
 
 .data-switches {
     flex: 3;
+    min-width: 300px;
     background-color: #ddd;
-    padding: 20px;
-    border-radius: 10px;
+    padding: 12px;
+    border-radius: 8px;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
     border: 1px solid #ccc;
 }
@@ -141,22 +164,23 @@ h3 {
 .switches {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px;
-    padding: 10px;
+    margin-bottom: 10px;
+    padding: 8px;
     background-color: rgba(0, 0, 0, 0.05);
-    border-radius: 8px;
+    border-radius: 6px;
 }
 
 .switch {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 0 5px;
+    margin: 0 3px;
 }
 
 .bit-label {
-    margin-top: 5px;
+    margin-top: 3px;
     font-weight: bold;
+    font-size: 13px;
 }
 
 .switch-input {
@@ -200,12 +224,12 @@ h3 {
 .data-display {
     background-color: #000;
     color: #0f0;
-    padding: 12px;
+    padding: 6px;
     text-align: center;
     border-radius: 6px;
     font-family: 'Courier New', monospace;
-    font-size: 20px;
-    margin-top: 15px;
+    font-size: 16px;
+    margin-top: 10px;
     display: flex;
     justify-content: space-around;
     box-shadow: inset 0 0 10px rgba(0, 255, 0, 0.2);
@@ -215,9 +239,10 @@ h3 {
 .register-select,
 .action-buttons {
     flex: 1;
+    min-width: 200px;
     background-color: #ddd;
-    padding: 20px;
-    border-radius: 10px;
+    padding: 12px;
+    border-radius: 8px;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
     border: 1px solid #ccc;
     display: flex;
@@ -228,24 +253,25 @@ h3 {
 .memory-address-controls {
     display: flex;
     flex-direction: column;
-    margin-bottom: 15px;
-    padding: 12px;
+    margin-bottom: 8px;
+    padding: 8px;
     background-color: rgba(0, 0, 0, 0.05);
-    border-radius: 8px;
+    border-radius: 6px;
 }
 
 .memory-address,
 .memory-value {
     display: flex;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 6px;
 }
 
 .memory-address label,
 .memory-value label {
     font-weight: bold;
-    width: 70px;
+    width: 55px;
     color: #333;
+    font-size: 13px;
 }
 
 .memory-address span,
@@ -253,11 +279,11 @@ h3 {
     font-family: 'Courier New', monospace;
     background-color: #000;
     color: #0f0;
-    padding: 6px 10px;
+    padding: 3px 6px;
     border-radius: 4px;
     min-width: 50px;
     text-align: center;
-    font-size: 18px;
+    font-size: 15px;
     border: 1px solid #444;
     letter-spacing: 1px;
     box-shadow: inset 0 0 5px rgba(0, 255, 0, 0.2);
@@ -267,17 +293,17 @@ h3 {
 .address-buttons {
     display: flex;
     justify-content: space-between;
-    margin: 10px 0;
+    margin: 6px 0;
 }
 
 .address-button {
-    width: 45px;
-    height: 45px;
+    width: 36px;
+    height: 36px;
     background-color: #579;
     color: white;
     border: none;
-    border-radius: 6px;
-    font-size: 20px;
+    border-radius: 4px;
+    font-size: 16px;
     font-weight: bold;
     cursor: pointer;
     box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
@@ -298,7 +324,7 @@ h3 {
 .reg-switches {
     display: flex;
     justify-content: space-around;
-    margin-top: 20px;
+    margin-top: 12px;
 }
 
 .reg-switch {
@@ -313,12 +339,12 @@ h3 {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 60px;
-    height: 60px;
+    width: 45px;
+    height: 45px;
     background-color: #888;
     color: white;
-    border-radius: 10px;
-    font-size: 22px;
+    border-radius: 6px;
+    font-size: 18px;
     font-weight: bold;
     cursor: pointer;
     box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
@@ -332,29 +358,25 @@ h3 {
 
 /* Action buttons */
 .action-buttons {
-    gap: 12px;
+    gap: 6px;
 }
 
 .action-button {
-    padding: 14px 15px;
-    /* Add consistent horizontal padding */
+    padding: 8px 10px;
     background-color: #579;
     border: none;
-    border-radius: 8px;
+    border-radius: 5px;
     color: white;
     font-weight: bold;
-    font-size: 16px;
+    font-size: 13px;
     cursor: pointer;
     box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
     transition: all 0.2s;
-    margin: 5px 0;
+    margin: 2px 0;
     width: 100%;
-    /* Make all buttons take full width of container */
     text-align: center;
-    /* Center the text */
 }
 
-/* Add disabled state styling for the Execute All button */
 .action-button:disabled {
     background-color: #aaa;
     color: #ddd;
@@ -371,9 +393,8 @@ h3 {
 /* Add button container for Execute All and Continue buttons */
 .execution-button-container {
     position: relative;
-    height: 45px;
-    /* Match the height of your buttons */
-    margin: 5px 0;
+    height: 40px;
+    margin: 2px 0;
 }
 
 #execute-all-button,
@@ -390,24 +411,33 @@ h3 {
     pointer-events: none;
 }
 
-/* When the continue button should be visible */
 #continue-button.active {
     opacity: 1;
     pointer-events: auto;
 }
 
-/* When continue is active, hide execute all */
 #continue-button.active+#execute-all-button {
     opacity: 0;
     pointer-events: none;
 }
 
+/* Create a container for all the lower sections that can scroll */
+.scrollable-sections {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    flex: 1;
+    gap: 10px;
+    /* Slightly reduced */
+    padding-right: 3px;
+    /* Reduced */
+}
+
 /* Memory display */
 .memory-section {
     background-color: #f8f8f8;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 25px;
+    padding: 12px;
+    border-radius: 8px;
     box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.1);
     border: 1px solid #ddd;
 }
@@ -415,14 +445,19 @@ h3 {
 .memory-display {
     font-family: 'Courier New', monospace;
     border: 1px solid #ccc;
-    border-radius: 8px;
+    border-radius: 6px;
     overflow: hidden;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    font-size: 13px;
+    max-height: 300px;
+    overflow-y: auto;
 }
 
 .memory-row {
     display: flex;
     border-bottom: 1px solid #ddd;
+    height: 26px;
+    align-items: center;
 }
 
 .memory-row:last-child {
@@ -434,20 +469,30 @@ h3 {
     font-weight: bold;
     position: sticky;
     top: 0;
+    z-index: 10;
+    height: 24px;
+    font-size: 12px;
 }
 
 .addr {
-    width: 70px;
-    padding: 8px;
+    width: 50px;
+    padding: 3px;
     background-color: #eee;
     border-right: 1px solid #ccc;
     text-align: center;
     font-weight: bold;
+    position: sticky;
+    left: 0;
+    z-index: 5;
+}
+
+.memory-row.header .addr {
+    z-index: 15;
 }
 
 .mem-val {
-    width: 35px;
-    padding: 8px 5px;
+    width: 28px;
+    padding: 3px;
     text-align: center;
     transition: background-color 0.2s;
     cursor: pointer;
@@ -468,7 +513,6 @@ h3 {
     box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
-/* Style for breakpoints - Enhanced visibility */
 .mem-val.breakpoint {
     background-color: #ff3333 !important;
     color: white !important;
@@ -489,7 +533,6 @@ h3 {
     text-shadow: 0 0 3px #000;
 }
 
-/* Style for active breakpoint (when PC is at breakpoint) */
 .mem-val.breakpoint.active {
     background-color: #f00 !important;
     color: white !important;
@@ -508,7 +551,6 @@ h3 {
     }
 }
 
-/* Breakpoint tag styles - Enhanced for better visibility */
 .breakpoint-tag {
     display: inline-block;
     background-color: #f55;
@@ -539,13 +581,13 @@ h3 {
 
 /* Memory instructions */
 .memory-instructions {
-    font-size: 0.9em;
+    font-size: 0.8em;
     color: #555;
-    margin-bottom: 12px;
-    padding: 10px;
+    margin-bottom: 8px;
+    padding: 6px;
     background-color: #f0f0f0;
-    border-radius: 6px;
-    line-height: 1.5;
+    border-radius: 4px;
+    line-height: 1.3;
     border: 1px solid #ddd;
 }
 
@@ -563,25 +605,26 @@ h3 {
 
 /* Breakpoint management panel */
 .breakpoint-management {
-    margin-top: 15px;
-    padding: 10px;
+    margin-top: 10px;
+    padding: 8px;
     background-color: #f5f5f5;
-    border-radius: 6px;
+    border-radius: 4px;
     border: 1px solid #ddd;
 }
 
 .breakpoint-management h4 {
     margin-top: 0;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
     color: #444;
+    font-size: 13px;
 }
 
 .active-breakpoints {
     display: flex;
     flex-wrap: wrap;
-    gap: 5px;
-    margin-bottom: 10px;
-    min-height: 30px;
+    gap: 4px;
+    margin-bottom: 8px;
+    min-height: 26px;
 }
 
 .breakpoint-tag {
@@ -606,7 +649,6 @@ h3 {
     transform: translateY(0);
 }
 
-/* Specific styling for the clear breakpoints button to ensure consistent padding */
 #clear-breakpoints-button {
     background-color: #a55;
     margin-top: 5px;
@@ -628,35 +670,35 @@ h3 {
 /* Program input section */
 .program-section {
     background-color: #f8f8f8;
-    padding: 20px;
-    border-radius: 10px;
+    padding: 12px;
+    border-radius: 8px;
     box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.1);
     border: 1px solid #ddd;
-    margin-bottom: 25px;
 }
 
 .program-instructions {
     color: #555;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
     font-style: italic;
+    font-size: 0.85em;
 }
 
 .program-actions {
     display: flex;
     justify-content: flex-end;
-    margin-top: 10px;
+    margin-top: 6px;
 }
 
 #program-input {
     width: 100%;
-    height: 100px;
-    margin: 10px 0;
+    height: 60px;
+    margin: 6px 0;
     font-family: 'Courier New', monospace;
-    font-size: 16px;
-    padding: 15px;
+    font-size: 14px;
+    padding: 8px;
     box-sizing: border-box;
     border: 1px solid #ccc;
-    border-radius: 6px;
+    border-radius: 4px;
     resize: vertical;
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -693,9 +735,8 @@ h3 {
 /* Debug console */
 .debug-section {
     background-color: #f8f8f8;
-    padding: 20px;
-    border-radius: 10px;
-    margin-top: 25px;
+    padding: 12px;
+    border-radius: 8px;
     box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.1);
     border: 1px solid #ddd;
 }
@@ -704,10 +745,10 @@ h3 {
     background-color: #000;
     color: #0f0;
     font-family: 'Courier New', monospace;
-    font-size: 14px;
-    padding: 15px;
-    border-radius: 6px;
-    height: 200px;
+    font-size: 12px;
+    padding: 10px;
+    border-radius: 4px;
+    height: 120px;
     overflow-y: scroll;
     white-space: pre-wrap;
     word-break: break-all;
@@ -716,25 +757,23 @@ h3 {
 }
 
 #debug-console div {
-    margin: 3px 0;
-    line-height: 1.4;
+    margin: 2px 0;
+    line-height: 1.3;
     border-bottom: 1px dotted #333;
-    padding-bottom: 3px;
+    padding-bottom: 2px;
 }
 
-/* Add styles for clear console button and debug actions */
 .debug-actions {
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     display: flex;
     justify-content: flex-end;
 }
 
 #clear-console {
     background-color: #777;
-    font-size: 14px;
-    padding: 8px 15px;
-    /* Consistent horizontal padding */
-    margin-bottom: 8px;
+    font-size: 13px;
+    padding: 6px 12px;
+    margin-bottom: 6px;
 }
 
 #clear-console:hover {
@@ -745,28 +784,6 @@ h3 {
     margin-top: 10px;
     display: flex;
     justify-content: space-between;
-}
-
-/* Memory instructions */
-.memory-instructions {
-    font-size: 0.9em;
-    color: #666;
-    margin-bottom: 10px;
-    padding: 8px;
-    background-color: #f5f5f5;
-    border-radius: 6px;
-    line-height: 1.4;
-}
-
-.key-instruction {
-    background-color: #eee;
-    padding: 2px 5px;
-    border-radius: 4px;
-    font-family: 'Courier New', monospace;
-    border: 1px solid #ddd;
-    color: #444;
-    white-space: nowrap;
-    margin: 0 2px;
 }
 
 /* Button animations */
@@ -826,7 +843,6 @@ h3 {
     background-color: #478;
 }
 
-/* Add styles for the continue button */
 #continue-button {
     background-color: #4a7;
     color: white;
@@ -854,12 +870,14 @@ h3 {
 
 /* Footer styles */
 .footer-section {
-    margin-top: 30px;
+    margin-top: 10px;
+    /* Reduced */
     text-align: center;
-    padding: 15px 0;
+    padding: 8px 0;
+    /* Reduced */
     border-top: 1px solid #ccc;
     color: #666;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .footer-section a {
@@ -879,7 +897,7 @@ h3 {
     display: inline-block;
 }
 
-/* Responsive design */
+/* Responsive design - update for better flexibility */
 @media (max-width: 1000px) {
     .switches-section {
         flex-direction: column;
@@ -891,14 +909,21 @@ h3 {
 
     .flags {
         margin-left: 0;
-        margin-top: 15px;
+        margin-top: 10px;
         justify-content: space-around;
+    }
+
+    .register-select,
+    .action-buttons,
+    .data-switches {
+        width: 100%;
     }
 }
 
 @media (max-width: 768px) {
     .breadboard {
-        padding: 15px;
+        padding: 5px;
+        /* Further reduced padding on smaller screens */
     }
 
     .switches {
@@ -907,14 +932,24 @@ h3 {
     }
 
     .switch {
-        margin: 5px 10px;
+        margin: 3px 6px;
     }
 
     .memory-row .mem-val {
-        padding: 6px 3px;
-        width: 28px;
-        font-size: 12px;
+        padding: 3px 2px;
+        width: 24px;
+        font-size: 11px;
     }
+
+    .scrollable-sections {
+        max-height: 70vh;
+    }
+}
+
+/* Add a class for the memory scroll container to allow easy max-height adjustments */
+.memory-scroll-container {
+    max-height: 300px;
+    overflow-y: auto;
 }
 
 /* Custom tooltip styling */
@@ -923,17 +958,16 @@ h3 {
     z-index: 100;
     background-color: #333;
     color: #fff;
-    padding: 8px 12px;
-    border-radius: 6px;
+    padding: 6px 10px;
+    border-radius: 5px;
     font-family: 'Arial', sans-serif;
-    font-size: 14px;
-    max-width: 300px;
+    font-size: 13px;
+    max-width: 280px;
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
     pointer-events: none;
-    /* allows mouse events to pass through */
     transition: opacity 0.2s;
     border: 1px solid #555;
-    line-height: 1.4;
+    line-height: 1.3;
 }
 
 .custom-tooltip::after {
