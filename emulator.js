@@ -27,13 +27,12 @@ class M6800 {
         this.a = 0;
         this.b = 0;
         this.x = 0;
-        this.cc = {z: false, n: false, h: false, i: false, c: false};
+        this.cc = { z: false, n: false, h: false, i: false, c: false };
     }
 
     // Method to load a program into memory
     load(program, startAddress) {
         for (let i = 0; i < program.length; i++) {
-            // console.log(`Loading byte: ${program[i].toString(16).toUpperCase()} at address ${startAddress + i}`);
             this.memory[startAddress + i] = program[i];
         }
         this.pc = startAddress;  // Set the program counter to the start address of the program
@@ -42,13 +41,22 @@ class M6800 {
     // Fetch, Decode, Execute cycle
     run() {
         let running = true;
-        // console.log(this.memory)
-        console.log(this.pc, this.memory[this.pc++])
+
         while (running) {
+            // For debugging
+            // console.log(`PC: ${this.pc.toString(16)}, A: ${this.a.toString(16)}, B: ${this.b.toString(16)}, X: ${this.x.toString(16)}`);
+
+            // Fetch the opcode
             const opcode = this.memory[this.pc++];
+
+            // Execute the instruction
             this.execute(opcode);
+
             // Example stopping condition or breakpoint
-            if (this.pc === 0xFFFF) {
+            if (opcode === 0x01) {  // NOP can be used as a stopping point
+                console.log("Execution complete (reached NOP)");
+                console.log(`Final state: PC=${this.pc.toString(16)}, A=${this.a.toString(16)}, B=${this.b.toString(16)}, X=${this.x.toString(16)}`);
+                console.log(`Memory at 0x10: ${this.memory[0x10].toString(16)}, Memory at 0x20: ${this.memory[0x20].toString(16)}`);
                 running = false;
             }
         }
@@ -58,49 +66,63 @@ class M6800 {
     execute(opcode) {
         switch (opcode) {
             case 0x86: // LDA Immediate
-                LDA(this, this.memory[this.pc++]);
+                LDA(this, this.pc);
+                this.pc++;
                 break;
             case 0x97: // STA Direct
-                STA(this, this.memory[this.pc++]);
+                STA(this, this.memory[this.pc]);
+                this.pc++;
                 break;
             case 0x8E: // LDX Immediate
-                LDX(this, this.memory[this.pc++]);
+                LDX(this, this.pc);
+                this.pc += 2; // X register is 16-bit, so we need to increment PC by 2
                 break;
             case 0x10: // STX Direct
-                STX(this, this.memory[this.pc++]);
+                STX(this, this.memory[this.pc]);
+                this.pc++;
                 break;
             case 0x6B: // ADD Direct
-                ADD(this, this.memory[this.pc++]);
+                ADD(this, this.memory[this.pc]);
+                this.pc++;
                 break;
             case 0x90: // SUB Direct
-                SUB(this, this.memory[this.pc++]);
+                SUB(this, this.memory[this.pc]);
+                this.pc++;
                 break;
             case 0x1C: // INC Direct
-                INC(this, this.memory[this.pc++]);
+                INC(this, this.memory[this.pc]);
+                this.pc++;
                 break;
             case 0x1A: // DEC Direct
-                DEC(this, this.memory[this.pc++]);
+                DEC(this, this.memory[this.pc]);
+                this.pc++;
                 break;
             case 0x20: // BRA
-                BRA(this, this.memory[this.pc++]);
+                BRA(this, this.memory[this.pc]);
+                this.pc++;
                 break;
             case 0x27: // BEQ
-                BEQ(this, this.memory[this.pc++]);
+                BEQ(this, this.memory[this.pc]);
+                this.pc++;
                 break;
             case 0x26: // BNE
-                BNE(this, this.memory[this.pc++]);
+                BNE(this, this.memory[this.pc]);
+                this.pc++;
                 break;
             case 0x01: // NOP
                 NOP();
                 break;
             case 0x24: // AND Direct
-                AND(this, this.memory[this.pc++]);
+                AND(this, this.memory[this.pc]);
+                this.pc++;
                 break;
             case 0x2A: // ORA Direct
-                ORA(this, this.memory[this.pc++]);
+                ORA(this, this.memory[this.pc]);
+                this.pc++;
                 break;
             case 0x28: // EOR Direct
-                EOR(this, this.memory[this.pc++]);
+                EOR(this, this.memory[this.pc]);
+                this.pc++;
                 break;
             case 0x2B: // ROL
                 ROL(this);
@@ -109,7 +131,7 @@ class M6800 {
                 ROR(this);
                 break;
             default:
-                // console.error(`Unimplemented opcode: ${opcode}`);
+                console.error(`Unimplemented opcode: ${opcode.toString(16)}`);
                 break;
         }
     }

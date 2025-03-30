@@ -16,12 +16,13 @@ function LDA(cpu, address) {
 // Store Accumulator A into Memory
 function STA(cpu, address) {
     cpu.memory[address] = cpu.a;
+    setCC(cpu, cpu.a);
 }
 
 // Load Index Register X from Memory
 function LDX(cpu, address) {
     cpu.x = (cpu.memory[address] << 8) | cpu.memory[address + 1];
-    setCC(cpu, cpu.x);
+    setCC(cpu, cpu.x >> 8); // Set condition codes based on high byte
 }
 
 // Store Index Register X into Memory
@@ -60,20 +61,24 @@ function DEC(cpu, address) {
 
 // Branch Always
 function BRA(cpu, offset) {
-    cpu.pc += offset;
+    // Treat the offset as a signed 8-bit value
+    const signedOffset = offset & 0x80 ? (offset - 256) : offset;
+    cpu.pc += signedOffset;
 }
 
 // Branch if Zero
 function BEQ(cpu, offset) {
     if (cpu.cc.z) {
-        cpu.pc += offset;
+        const signedOffset = offset & 0x80 ? (offset - 256) : offset;
+        cpu.pc += signedOffset;
     }
 }
 
 // Branch if Not Zero
 function BNE(cpu, offset) {
     if (!cpu.cc.z) {
-        cpu.pc += offset;
+        const signedOffset = offset & 0x80 ? (offset - 256) : offset;
+        cpu.pc += signedOffset;
     }
 }
 
