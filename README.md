@@ -3,6 +3,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 ![Platform](https://img.shields.io/badge/platform-browser%20%7C%20node.js-lightgrey)
 
+[Online Emulator](https://bronze-eagle-prudy-vpaqjrda.bls.dev/)
+
 ## Motorola 6800 Architecture
 
 ```mermaid
