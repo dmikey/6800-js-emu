@@ -310,38 +310,37 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Button event handlers
-    document.getElementById('reset-button').addEventListener('click', function () {
-        // Reset program state variables in addition to other resets
-        pausedAtBreakpoint = false;
-        programRunning = false;
-        performFullReset();
+    const prevAddrBtn = document.getElementById('prev-addr');
+    if (prevAddrBtn) {
+        prevAddrBtn.addEventListener('click', function () {
+            currentMemoryAddress = (currentMemoryAddress - 1) & 0xFFFF; // Wrap around at 0
+            updateUI();
+        });
+    } else {
+        console.warn("Element 'prev-addr' not found in the document");
+    }
 
-        // Provide visual feedback that reset occurred
-        const resetButton = document.getElementById('reset-button');
-        resetButton.classList.add('button-flash');
-        setTimeout(() => {
-            resetButton.classList.remove('button-flash');
-        }, 200);
-    });
+    const nextAddrBtn = document.getElementById('next-addr');
+    if (nextAddrBtn) {
+        nextAddrBtn.addEventListener('click', function () {
+            currentMemoryAddress = (currentMemoryAddress + 1) & 0xFFFF; // Wrap around at 65535
+            updateUI();
+        });
+    } else {
+        console.warn("Element 'next-addr' not found in the document");
+    }
 
-    // Memory navigation buttons
-    document.getElementById('prev-addr').addEventListener('click', function () {
-        currentMemoryAddress = (currentMemoryAddress - 1) & 0xFFFF; // Wrap around at 0
-        updateUI();
-    });
-
-    document.getElementById('next-addr').addEventListener('click', function () {
-        currentMemoryAddress = (currentMemoryAddress + 1) & 0xFFFF; // Wrap around at 65535
-        updateUI();
-    });
-
-    // Store to memory button
-    document.getElementById('store-to-memory').addEventListener('click', function () {
-        const value = parseInt(document.getElementById('data-hex').textContent, 16);
-        cpu.memory[currentMemoryAddress] = value;
-        console.log(`Stored value ${value.toString(16)} at address ${currentMemoryAddress.toString(16)}`);
-        updateUI();
-    });
+    const storeToMemoryBtn = document.getElementById('store-to-memory');
+    if (storeToMemoryBtn) {
+        storeToMemoryBtn.addEventListener('click', function () {
+            const value = parseInt(document.getElementById('data-hex').textContent, 16);
+            cpu.memory[currentMemoryAddress] = value;
+            console.log(`Stored value ${value.toString(16)} at address ${currentMemoryAddress.toString(16)}`);
+            updateUI();
+        });
+    } else {
+        console.warn("Element 'store-to-memory' not found in the document");
+    }
 
     // Load program button handler
     document.getElementById('load-program').addEventListener('click', function () {

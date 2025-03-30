@@ -83,9 +83,19 @@ The 6800 was an 8-bit microprocessor released by Motorola in 1974. It was among 
 The browser interface provides a complete emulation environment:
 
 1. **Load a Program**: Enter hexadecimal opcodes in the Program input box and click "Load Program"
-2. **Execute Instructions**: Use the "Execute Step" button to step through program execution or "Execute All" to run the entire program
+2. **Execute Instructions**: 
+   - Use the "Execute Step" button to step through program execution one instruction at a time
+   - Use "Continue Execution" to resume execution after hitting a breakpoint
+   - Use "Execute All" to run the entire program until completion or a breakpoint is hit
 3. **Monitor State**: View register values, flags, and memory contents in real-time
-4. **Manipulate Memory**: Click on memory locations to select them, then use the data switches to set values
+4. **Manipulate Memory**: 
+   - Click on memory locations to select them, then use the data switches to set values
+   - Use the memory navigation buttons to move through memory addresses
+   - Press "Shift + Click" on a memory cell to set a breakpoint
+5. **Debugging**:
+   - Manage breakpoints through the breakpoint panel
+   - View execution status and timing in the status bar
+   - Use the "Dump Memory" feature to view memory contents in the console
 
 ### Example Program
 
@@ -153,7 +163,7 @@ node main.js example.txt
 
 ### 8. **Improve Performance**
    - [ ] Optimize the emulator's execution loop for better performance, especially when running large programs.
-   - [ ] Add a "fast-forward" mode to skip through instructions quickly.
+   - [x] Add a "fast-forward" mode to skip through instructions quickly.
 
 ### 9. **Documentation and Tutorials**
    - [ ] Write detailed documentation explaining how to use the emulator, including the instruction set, addressing modes, and UI features.
