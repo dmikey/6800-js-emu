@@ -759,6 +759,21 @@ h3 {
     background-color: #478;
 }
 
+/* Add styles for the continue button */
+#continue-button {
+    background-color: #4a7;
+    color: white;
+    border-color: #295;
+}
+
+#continue-button:hover {
+    background-color: #5b8;
+}
+
+#continue-button:active {
+    background-color: #396;
+}
+
 /* Version display */
 .version {
     font-size: 14px;
