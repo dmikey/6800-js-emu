@@ -1,0 +1,11 @@
+{
+	"extends": "./tsconfig.base.json",
+	"compilerOptions": {
+		"outDir": "./build/debug",
+		"sourceMap": true, // Enable source maps for debugging
+		"declaration": true, // Generate declaration files
+		"removeComments": false, // Keep comments for debugging context
+		"noEmitOnError": false, // Allow emitting even if there are type errors
+		"incremental": true // Enable incremental builds
+	}
+}

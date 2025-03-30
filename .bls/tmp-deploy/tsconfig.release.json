@@ -1,0 +1,11 @@
+{
+	"extends": "./tsconfig.base.json",
+	"compilerOptions": {
+		"outDir": "./build",
+		"sourceMap": false, // Disable source maps for production
+		"declaration": true, // Generate declaration files
+		"removeComments": true, // Remove comments for cleaner output
+		"noEmitOnError": true, // Prevent emitting if there are type errors
+		"incremental": true // Enable incremental builds
+	}
+}

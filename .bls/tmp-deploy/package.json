@@ -1,0 +1,29 @@
+{
+	"name": "tmp-deploy",
+	"version": "1.0.0",
+	"description": "Javy typescript template for the Blockless CLI.",
+	"main": "index.js",
+	"scripts": {
+		"clean": "rm -rf build",
+		"build:release": "mkdirp ./build && bls-sdk-ts build ./index.ts -o ./build -f release.wasm",
+		"build:debug": "mkdirp ./build && bls-sdk-ts build ./index.ts -o ./build -f debug.wasm",
+		"invoke": "bls-runtime ./build/template_name.wasm"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/blocklessnetwork/template-javy-typescript-hello-world.git"
+	},
+	"author": "Blockless",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/blocklessnetwork/template-javy-typescript-hello-world/issues"
+	},
+	"homepage": "https://github.com/blocklessnetwork/template-javy-typescript-hello-world#readme",
+	"dependencies": {
+		"@blockless/sdk-ts": "^1.0.5",
+		"mkdirp": "^3.0.1"
+	},
+	"bls": {
+		"functionId": "bless-function_tmp-deploy-1.0.0"
+	}
+}
