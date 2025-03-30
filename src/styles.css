@@ -421,6 +421,35 @@ h3 {
     pointer-events: none;
 }
 
+/* Horizontal action buttons row */
+.action-buttons-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+    background-color: #ddd;
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ccc;
+}
+
+.action-buttons-row .action-button {
+    flex: 1;
+    min-width: 0;
+    padding: 10px 0;
+    font-size: 20px;
+    /* Larger for emojis */
+    margin: 0;
+}
+
+.action-buttons-row .execution-button-container {
+    position: relative;
+    flex: 1;
+    height: auto;
+    margin: 0;
+}
+
 /* Create a container for all the lower sections that can scroll */
 .scrollable-sections {
     display: flex;
@@ -780,7 +809,7 @@ h3 {
     background-color: #666;
 }
 
-.debug-actions {
+debug-actions {
     margin-top: 10px;
     display: flex;
     justify-content: space-between;
@@ -944,6 +973,23 @@ h3 {
     .scrollable-sections {
         max-height: 70vh;
     }
+
+    .action-buttons-row {
+        flex-wrap: wrap;
+    }
+
+    .action-buttons-row .action-button,
+    .action-buttons-row .execution-button-container {
+        flex-basis: calc(33.3% - 10px);
+    }
+}
+
+@media (max-width: 480px) {
+
+    .action-buttons-row .action-button,
+    .action-buttons-row .execution-button-container {
+        flex-basis: calc(50% - 10px);
+    }
 }
 
 /* Add a class for the memory scroll container to allow easy max-height adjustments */
@@ -981,4 +1027,237 @@ h3 {
     transform: rotate(45deg);
     border-top: 1px solid #555;
     border-left: 1px solid #555;
+}
+
+/* Slide-out panel styles */
+.side-panel {
+    position: fixed;
+    top: 0;
+    right: -320px;
+    /* Start off-screen */
+    width: 300px;
+    height: 100vh;
+    background-color: #f5f5f5;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    transition: right 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.side-panel.open {
+    right: 0;
+}
+
+/* Debug panel - positioned slightly lower so both panels can be open at once */
+.side-panel.debug-panel {
+    z-index: 999;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: #e0e0e0;
+    border-bottom: 1px solid #ccc;
+}
+
+.panel-header h3 {
+    margin: 0;
+    font-size: 16px;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.close-panel-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #555;
+    padding: 0 5px;
+    margin: 0;
+}
+
+.close-panel-button:hover {
+    color: #000;
+}
+
+.panel-content {
+    padding: 15px;
+    flex: 1;
+}
+
+.panel-toggle {
+    position: fixed;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #579;
+    color: white;
+    border: none;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    padding: 12px 10px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    z-index: 999;
+    transition: all 0.2s;
+}
+
+.panel-toggle:hover {
+    background-color: #468;
+    padding-right: 15px;
+}
+
+/* Position debug toggle button below breakpoint toggle */
+.panel-toggle.debug-toggle {
+    top: calc(50% + 60px);
+    background-color: #5a9;
+}
+
+.panel-toggle.debug-toggle:hover {
+    background-color: #478;
+}
+
+/* Position program toggle button below debug toggle */
+.panel-toggle.program-toggle {
+    top: calc(50% + 120px);
+    background-color: #a57;
+}
+
+.panel-toggle.program-toggle:hover {
+    background-color: #946;
+}
+
+.toggle-icon {
+    font-size: 18px;
+    display: block;
+}
+
+/* Debug console styling in panel */
+.debug-panel .panel-content {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.debug-panel .debug-actions {
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.debug-panel #debug-console {
+    background-color: #000;
+    color: #0f0;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    padding: 10px;
+    border-radius: 4px;
+    flex: 1;
+    /* Take remaining space */
+    overflow-y: scroll;
+    white-space: pre-wrap;
+    word-break: break-all;
+    box-shadow: inset 0 0 15px rgba(0, 255, 0, 0.1);
+    border: 1px solid #444;
+}
+
+.debug-panel #debug-console div {
+    margin: 2px 0;
+    line-height: 1.3;
+    border-bottom: 1px dotted #333;
+    padding-bottom: 2px;
+}
+
+.debug-panel #clear-console {
+    background-color: #777;
+    font-size: 13px;
+    padding: 6px 12px;
+    margin-bottom: 6px;
+}
+
+.debug-panel #clear-console:hover {
+    background-color: #666;
+}
+
+/* Program panel styling */
+.program-panel .panel-content {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.program-panel .program-instructions {
+    color: #555;
+    margin-bottom: 8px;
+    font-style: italic;
+    font-size: 0.85em;
+}
+
+.program-panel #program-input {
+    width: 100%;
+    height: 150px;
+    /* Make it taller in the panel view */
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    padding: 8px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    flex: 1;
+}
+
+.program-panel #program-input:focus {
+    outline: none;
+    border-color: #579;
+    box-shadow: 0 0 5px rgba(87, 153, 170, 0.5), inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.program-panel .program-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.program-panel #load-program {
+    background-color: #579;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s;
+}
+
+.program-panel #load-program:hover {
+    background-color: #468;
+    transform: translateY(-2px);
+}
+
+/* Responsive design adjustments */
+@media (max-width: 480px) {
+    .side-panel {
+        width: 85%;
+        right: -87%;
+    }
+
+    /* Position debug toggle when screen is small */
+    .panel-toggle.debug-toggle {
+        top: calc(50% + 50px);
+    }
+
+    .panel-toggle.program-toggle {
+        top: calc(50% + 100px);
+    }
 }

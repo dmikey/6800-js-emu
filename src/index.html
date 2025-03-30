@@ -192,20 +192,20 @@
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="action-buttons">
-                <button id="load-button" class="action-button">Load to Register</button>
-                <button id="execute-button" class="action-button">Execute Step</button>
-
-                <div class="execution-button-container">
-                    <button id="continue-button" class="action-button">Continue</button>
-                    <button id="execute-all-button" class="action-button">Execute All</button>
-                </div>
-
-                <button id="reset-button" class="action-button">Reset</button>
-                <button id="full-reset-button" class="action-button">System Reset</button>
-                <button id="dump-memory" class="action-button">Dump Memory</button>
+        <!-- Action buttons in their own row -->
+        <div class="action-buttons-row">
+            <button id="load-button" class="action-button" data-tooltip="Load to Register">📤</button>
+            <button id="execute-button" class="action-button" data-tooltip="Execute Step">👣</button>
+            <div class="execution-button-container">
+                <button id="continue-button" class="action-button" data-tooltip="Continue Execution">▶️</button>
+                <button id="execute-all-button" class="action-button"
+                    data-tooltip="Execute All Instructions">🚀</button>
             </div>
+            <button id="reset-button" class="action-button" data-tooltip="Reset">🔄</button>
+            <button id="full-reset-button" class="action-button" data-tooltip="System Reset">🗑️</button>
+            <button id="dump-memory" class="action-button" data-tooltip="Dump Memory">📊</button>
         </div>
 
         <div class="memory-section">
@@ -240,37 +240,6 @@
             </div>
         </div>
 
-        <div class="program-section">
-            <h3>Program</h3>
-            <div class="program-instructions">Enter hexadecimal bytes separated by spaces (e.g., 86 05 97 10)</div>
-            <textarea id="program-input" placeholder="Enter program bytes in hex (e.g., 86 05 97 10...)"></textarea>
-            <div class="program-actions">
-                <button id="load-program">Load Program</button>
-            </div>
-        </div>
-
-        <div class="debug-section">
-            <h3>Debug Console</h3>
-            <div class="debug-actions">
-                <button id="clear-console" class="action-button">Clear Console</button>
-            </div>
-            <div id="debug-console"></div>
-
-            <div class="breakpoint-management">
-                <h4>Breakpoint Management</h4>
-                <div class="breakpoint-instructions">
-                    Press <span class="key-instruction">Shift</span> + <span class="key-instruction">Click</span> on a
-                    memory cell to set a breakpoint.
-                    When program execution reaches a breakpoint, it will pause.
-                </div>
-                <div id="active-breakpoints" class="active-breakpoints">
-                    <span class="no-breakpoints-msg" id="no-breakpoints-msg">No active breakpoints</span>
-                    <!-- Breakpoint tags will be added here by JavaScript -->
-                </div>
-                <button id="clear-breakpoints-button" class="action-button">Clear All Breakpoints</button>
-            </div>
-        </div>
-
         <!-- Footer section -->
         <footer class="footer-section">
             <p>
@@ -281,6 +250,67 @@
                 • <span class="emoji-separator">🔧</span> 6800 Emulator <span class="emoji-separator">🚀</span>
             </p>
         </footer>
+    </div>
+
+    <!-- Breakpoint management panel as a slide-out -->
+    <button id="breakpoint-panel-toggle" class="panel-toggle" data-tooltip="Manage Breakpoints">
+        <span class="toggle-icon">🔍</span>
+    </button>
+
+    <div id="breakpoint-panel" class="side-panel">
+        <div class="panel-header">
+            <h3>Breakpoint Management</h3>
+            <button id="close-panel" class="close-panel-button">&times;</button>
+        </div>
+        <div class="panel-content">
+            <div class="breakpoint-instructions">
+                Press <span class="key-instruction">Shift</span> + <span class="key-instruction">Click</span> on a
+                memory cell to set a breakpoint.
+                When program execution reaches a breakpoint, it will pause.
+            </div>
+            <div id="active-breakpoints" class="active-breakpoints">
+                <span class="no-breakpoints-msg" id="no-breakpoints-msg">No active breakpoints</span>
+                <!-- Breakpoint tags will be added here by JavaScript -->
+            </div>
+            <button id="clear-breakpoints-button" class="action-button">Clear All Breakpoints</button>
+        </div>
+    </div>
+
+    <!-- Debug console panel as a slide-out -->
+    <button id="debug-panel-toggle" class="panel-toggle debug-toggle" data-tooltip="Debug Console">
+        <span class="toggle-icon">🔧</span>
+    </button>
+
+    <div id="debug-panel" class="side-panel debug-panel">
+        <div class="panel-header">
+            <h3>Debug Console</h3>
+            <button id="close-debug-panel" class="close-panel-button">&times;</button>
+        </div>
+        <div class="panel-content">
+            <div class="debug-actions">
+                <button id="clear-console" class="action-button">Clear Console</button>
+            </div>
+            <div id="debug-console"></div>
+        </div>
+    </div>
+
+    <!-- Program loader panel as a slide-out -->
+    <button id="program-panel-toggle" class="panel-toggle program-toggle" data-tooltip="Program Loader">
+        <span class="toggle-icon">📝</span>
+    </button>
+
+    <div id="program-panel" class="side-panel program-panel">
+        <div class="panel-header">
+            <h3>Program Loader</h3>
+            <button id="close-program-panel" class="close-panel-button">&times;</button>
+        </div>
+        <div class="panel-content">
+            <div class="program-instructions">Enter hexadecimal bytes separated by spaces (e.g., 86 05 97 10)</div>
+            <textarea id="program-input" placeholder="Enter program bytes in hex (e.g., 86 05 97 10...)"></textarea>
+            <div class="program-actions">
+                <button id="load-program">Load Program</button>
+            </div>
+        </div>
     </div>
 
     <script>

@@ -37,7 +37,10 @@ document.addEventListener('DOMContentLoaded', function () {
         'full-reset-button': 'Reset CPU and clear all memory',
         'dump-memory': 'Print memory contents to the debug console',
         'store-to-memory': 'Store the value from the data switches to the currently selected memory address',
-        'clear-breakpoints-button': 'Remove all breakpoints'
+        'clear-breakpoints-button': 'Remove all breakpoints',
+        'breakpoint-panel-toggle': 'Open breakpoint management panel',
+        'debug-panel-toggle': 'Open debug console',
+        'program-panel-toggle': 'Open program loader'
     };
 
     // Function to show tooltip

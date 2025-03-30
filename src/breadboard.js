@@ -618,6 +618,87 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log("Current breakpoints:", breakpoints.map(b => "0x" + b.toString(16).toUpperCase()));
     }
 
+    // Add panel toggle functionality
+    const panelToggleButton = document.getElementById('breakpoint-panel-toggle');
+    const closeButton = document.getElementById('close-panel');
+    const panel = document.getElementById('breakpoint-panel');
+
+    if (panelToggleButton && closeButton && panel) {
+        // Open panel
+        panelToggleButton.addEventListener('click', function () {
+            panel.classList.add('open');
+        });
+
+        // Close panel
+        closeButton.addEventListener('click', function () {
+            panel.classList.remove('open');
+        });
+
+        // Also close when clicking outside the panel
+        document.addEventListener('click', function (event) {
+            // If click is not on panel or toggle button and panel is open
+            if (!panel.contains(event.target) &&
+                !panelToggleButton.contains(event.target) &&
+                panel.classList.contains('open')) {
+                panel.classList.remove('open');
+            }
+        });
+    }
+
+    // Debug console panel toggle functionality
+    const debugPanelToggleButton = document.getElementById('debug-panel-toggle');
+    const closeDebugButton = document.getElementById('close-debug-panel');
+    const debugPanel = document.getElementById('debug-panel');
+
+    if (debugPanelToggleButton && closeDebugButton && debugPanel) {
+        // Open panel
+        debugPanelToggleButton.addEventListener('click', function () {
+            debugPanel.classList.add('open');
+        });
+
+        // Close panel
+        closeDebugButton.addEventListener('click', function () {
+            debugPanel.classList.remove('open');
+        });
+
+        // Also close when clicking outside the panel
+        document.addEventListener('click', function (event) {
+            // If click is not on panel or toggle button and panel is open
+            if (!debugPanel.contains(event.target) &&
+                !debugPanelToggleButton.contains(event.target) &&
+                debugPanel.classList.contains('open')) {
+                debugPanel.classList.remove('open');
+            }
+        });
+    }
+
+    // Program loader panel toggle functionality
+    const programPanelToggleButton = document.getElementById('program-panel-toggle');
+    const closeProgramButton = document.getElementById('close-program-panel');
+    const programPanel = document.getElementById('program-panel');
+
+    if (programPanelToggleButton && closeProgramButton && programPanel) {
+        // Open panel
+        programPanelToggleButton.addEventListener('click', function () {
+            programPanel.classList.add('open');
+        });
+
+        // Close panel
+        closeProgramButton.addEventListener('click', function () {
+            programPanel.classList.remove('open');
+        });
+
+        // Also close when clicking outside the panel
+        document.addEventListener('click', function (event) {
+            // If click is not on panel or toggle button and panel is open
+            if (!programPanel.contains(event.target) &&
+                !programPanelToggleButton.contains(event.target) &&
+                programPanel.classList.contains('open')) {
+                programPanel.classList.remove('open');
+            }
+        });
+    }
+
     // Initialize UI
     updateUI();
 });
