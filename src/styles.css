@@ -334,7 +334,8 @@ h3 {
 }
 
 .action-button {
-    padding: 14px 0;
+    padding: 14px 15px;
+    /* Add consistent horizontal padding */
     background-color: #579;
     border: none;
     border-radius: 8px;
@@ -345,16 +346,10 @@ h3 {
     box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
     transition: all 0.2s;
     margin: 5px 0;
-}
-
-.action-button:hover {
-    background-color: #468;
-    transform: translateY(-2px);
-}
-
-.action-button:active {
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
-    transform: translateY(1px);
+    width: 100%;
+    /* Make all buttons take full width of container */
+    text-align: center;
+    /* Center the text */
 }
 
 /* Add disabled state styling for the Execute All button */
@@ -369,6 +364,40 @@ h3 {
 .action-button:disabled:hover {
     background-color: #aaa;
     transform: none;
+}
+
+/* Add button container for Execute All and Continue buttons */
+.execution-button-container {
+    position: relative;
+    height: 45px;
+    /* Match the height of your buttons */
+    margin: 5px 0;
+}
+
+#execute-all-button,
+#continue-button {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+#continue-button {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* When the continue button should be visible */
+#continue-button.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* When continue is active, hide execute all */
+#continue-button.active+#execute-all-button {
+    opacity: 0;
+    pointer-events: none;
 }
 
 /* Memory display */
@@ -575,9 +604,12 @@ h3 {
     transform: translateY(0);
 }
 
+/* Specific styling for the clear breakpoints button to ensure consistent padding */
 #clear-breakpoints-button {
     background-color: #a55;
     margin-top: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 #clear-breakpoints-button:hover {
@@ -698,7 +730,8 @@ h3 {
 #clear-console {
     background-color: #777;
     font-size: 14px;
-    padding: 8px 12px;
+    padding: 8px 15px;
+    /* Consistent horizontal padding */
     margin-bottom: 8px;
 }
 

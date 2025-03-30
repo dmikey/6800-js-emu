@@ -45,14 +45,18 @@ document.addEventListener('DOMContentLoaded', function () {
         // Show or hide the continue button based on breakpoint state
         const continueButton = document.getElementById('continue-button');
         if (continueButton) {
-            continueButton.style.display = pausedAtBreakpoint ? 'inline-block' : 'none';
+            if (pausedAtBreakpoint) {
+                continueButton.classList.add('active');
+            } else {
+                continueButton.classList.remove('active');
+            }
         }
 
         // Update Execute All button state based on if program is running
         const executeAllButton = document.getElementById('execute-all-button');
         if (executeAllButton) {
-            executeAllButton.disabled = programRunning || pausedAtBreakpoint;
-            executeAllButton.title = programRunning || pausedAtBreakpoint ?
+            executeAllButton.disabled = programRunning;
+            executeAllButton.title = programRunning ?
                 "Cannot run while program is active" : "Execute program until completion";
         }
     }

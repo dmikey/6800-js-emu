@@ -58,7 +58,7 @@
     </style>
 
     <div class="breadboard">
-        <h1>6800 Breadboard Simulator <span class="version">v1.1</span></h1>
+        <h1>6800 Breadboard Simulator <span class="version">v1.0.0</span></h1>
 
         <div class="control-section">
             <div class="registers">
@@ -196,8 +196,12 @@
             <div class="action-buttons">
                 <button id="load-button" class="action-button">Load to Register</button>
                 <button id="execute-button" class="action-button">Execute Step</button>
-                <button id="execute-all-button" class="action-button">Execute All</button>
-                <button id="continue-button" class="action-button" style="display: none;">Continue</button>
+
+                <div class="execution-button-container">
+                    <button id="continue-button" class="action-button">Continue</button>
+                    <button id="execute-all-button" class="action-button">Execute All</button>
+                </div>
+
                 <button id="reset-button" class="action-button">Reset</button>
                 <button id="full-reset-button" class="action-button">System Reset</button>
                 <button id="dump-memory" class="action-button">Dump Memory</button>
