@@ -95,7 +95,7 @@ node main.js example.txt
 ### 1. **Enhance Debugging and Logging**
    - [x] **Add Step-by-Step Execution Logs**: Include detailed logs for each instruction executed, showing the opcode, affected registers, and memory changes.
    - [x] **Memory Dump Feature**: Add a feature to dump the entire memory or specific ranges to the debug console for analysis.
-   - [ ] **Breakpoint Support**: Allow users to set breakpoints at specific memory addresses or instructions.
+   - [x] **Breakpoint Support**: Allow users to set breakpoints at specific memory addresses or instructions.
 
 ### 2. **Expand Instruction Set**
    - [x] Implement additional 6800 instructions that are currently missing, such as `TAP`, `TBA`, `ABA`, and others.

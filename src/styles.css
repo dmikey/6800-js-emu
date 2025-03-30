@@ -357,6 +357,20 @@ h3 {
     transform: translateY(1px);
 }
 
+/* Add disabled state styling for the Execute All button */
+.action-button:disabled {
+    background-color: #aaa;
+    color: #ddd;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+.action-button:disabled:hover {
+    background-color: #aaa;
+    transform: none;
+}
+
 /* Memory display */
 .memory-section {
     background-color: #f8f8f8;

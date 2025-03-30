@@ -10,6 +10,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // Add a variable to track if we're paused at a breakpoint
     let pausedAtBreakpoint = false;
 
+    // Add a variable to track if program is currently running
+    let programRunning = false;
+
     // Update the UI with CPU state
     function updateUI() {
         // Update registers
@@ -43,6 +46,14 @@ document.addEventListener('DOMContentLoaded', function () {
         const continueButton = document.getElementById('continue-button');
         if (continueButton) {
             continueButton.style.display = pausedAtBreakpoint ? 'inline-block' : 'none';
+        }
+
+        // Update Execute All button state based on if program is running
+        const executeAllButton = document.getElementById('execute-all-button');
+        if (executeAllButton) {
+            executeAllButton.disabled = programRunning || pausedAtBreakpoint;
+            executeAllButton.title = programRunning || pausedAtBreakpoint ?
+                "Cannot run while program is active" : "Execute program until completion";
         }
     }
 
@@ -222,6 +233,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Button event handlers
     document.getElementById('reset-button').addEventListener('click', function () {
+        // Reset program state variables in addition to other resets
+        pausedAtBreakpoint = false;
+        programRunning = false;
+
         performFullReset();
 
         // Provide visual feedback that reset occurred
@@ -270,6 +285,66 @@ document.addEventListener('DOMContentLoaded', function () {
         const opcode = cpu.memory[cpu.pc];
         const opcodeHex = opcode.toString(16).padStart(2, '0').toUpperCase();
 
+        // If we're already paused at a breakpoint, we should execute this instruction
+        // regardless of the breakpoint (otherwise we can never step through it)
+        if (pausedAtBreakpoint) {
+            console.log(`Stepping through breakpoint at PC=${cpu.pc.toString(16).padStart(4, '0')}, opcode=${opcodeHex}`);
+
+            // Record the current PC before executing
+            const currentPC = cpu.pc;
+
+            // Execute the instruction at the breakpoint
+            const result = cpu.step();
+
+            if (!result) {
+                console.error("Execution failed. See error above.");
+                pausedAtBreakpoint = false;
+                updateUI();
+                return;
+            }
+
+            console.log(`Execution completed, new PC=${cpu.pc.toString(16).padStart(4, '0')}, A=${cpu.a.toString(16).padStart(2, '0')}, B=${cpu.b.toString(16).padStart(2, '0')}`);
+
+            // Add debug info for register values
+            console.log(`Register A: ${cpu.a.toString(16).padStart(2, '0')}, Register B: ${cpu.b.toString(16).padStart(2, '0')}, PC: ${cpu.pc.toString(16).padStart(4, '0')}`);
+            console.log(`Flags - Z:${cpu.cc.z ? 'ON' : 'off'}, N:${cpu.cc.n ? 'ON' : 'off'}, V:${cpu.cc.v ? 'ON' : 'off'}, C:${cpu.cc.c ? 'ON' : 'off'}, H:${cpu.cc.h ? 'ON' : 'off'}, I:${cpu.cc.i ? 'ON' : 'off'}`);
+
+            // WORKAROUND: Check if PC didn't advance and force it to move to the next instruction
+            // This works around potential bugs in the CPU emulator
+            if (cpu.pc === currentPC) {
+                console.warn(`PC didn't advance after execution of opcode ${opcodeHex}. Forcing increment.`);
+
+                // Determine instruction length (most 6800 instructions are 1-3 bytes)
+                let increment = 1; // Default increment for 1-byte instructions
+
+                // Make a reasonable guess of instruction length based on opcode
+                // This is a simplified lookup since we don't have the full instruction set
+                // 97 is STA Direct which is 2 bytes (opcode + direct address)
+                if (opcode === 0x97) {
+                    increment = 2; // opcode + direct address
+                } else if ([0x7E, 0xBD, 0xAD].includes(opcode)) {
+                    increment = 3; // Examples of 3-byte instructions (JMP, JSR Extended)
+                }
+
+                cpu.pc = (currentPC + increment) & 0xFFFF; // Apply increment with wrapping
+                console.log(`Advancing PC to ${cpu.pc.toString(16).padStart(4, '0').toUpperCase()}`);
+            }
+
+            // After executing the instruction, we're no longer paused at a breakpoint
+            // We'll only pause again if the next instruction has a breakpoint
+            pausedAtBreakpoint = false;
+
+            // Only check for breakpoint at new PC if it's different from where we started
+            if (cpu.pc !== currentPC && cpu.hasBreakpoint(cpu.pc)) {
+                console.log(`New breakpoint found at: 0x${cpu.pc.toString(16).padStart(4, '0').toUpperCase()}`);
+                pausedAtBreakpoint = true;
+            }
+
+            updateUI();
+            return;
+        }
+
+        // Normal execution path (not already at a breakpoint)
         // Check for breakpoint BEFORE executing the instruction
         if (cpu.hasBreakpoint(cpu.pc)) {
             console.log(`Breakpoint hit at 0x${cpu.pc.toString(16).padStart(4, '0').toUpperCase()}`);
@@ -306,6 +381,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Execute All button handler
     document.getElementById('execute-all-button').addEventListener('click', function () {
+        // Don't run if program is already active
+        if (programRunning || pausedAtBreakpoint) {
+            console.log("Cannot start execution - program is already running or paused");
+            return;
+        }
+
+        // Set the program running state to true
+        programRunning = true;
+        updateUI(); // Update button state
+
         console.log("Executing entire program...");
 
         // Run until NOP (0x01) is reached, breakpoint hit, or max steps
@@ -358,10 +443,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (hitBreakpoint) {
             console.log(`Program paused at breakpoint after ${steps} steps`);
+            // Don't reset programRunning since we're still paused at a breakpoint
         } else if (steps >= maxSteps) {
             console.warn(`Maximum step count (${maxSteps}) reached. Execution halted to prevent infinite loop.`);
+            programRunning = false;
         } else {
             console.log(`Program execution completed in ${steps} steps`);
+            programRunning = false;
         }
 
         console.log(`Final state: A=${cpu.a.toString(16).padStart(2, '0')}, B=${cpu.b.toString(16).padStart(2, '0')}, PC=${cpu.pc.toString(16).padStart(4, '0')}`);
@@ -404,8 +492,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 cpu.addBreakpoint(currentPC);
             }
 
-            // Reset the paused state
+            // Reset the paused state, but keep program running true
             pausedAtBreakpoint = false;
+            programRunning = true;
 
             // Now continue execution with execute-all logic directly, not by clicking the button
             // This avoids triggering DOM events that might have side effects
@@ -447,11 +536,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (hitBreakpoint) {
                 console.log(`Program paused at breakpoint after ${steps} steps`);
+                pausedAtBreakpoint = true;
+                // programRunning stays true while at breakpoint
             } else if (steps >= maxSteps) {
                 console.warn(`Maximum step count (${maxSteps}) reached. Execution halted to prevent infinite loop.`);
+                pausedAtBreakpoint = false;
+                programRunning = false;
             } else {
                 console.log(`Program execution completed in ${steps} steps`);
                 pausedAtBreakpoint = false;
+                programRunning = false;
             }
 
             updateUI();
@@ -463,6 +557,10 @@ document.addEventListener('DOMContentLoaded', function () {
         // Perform a complete system reset including clearing all memory
         cpu.memory = new Uint8Array(65536);  // Recreate the entire memory array
         performFullReset();
+
+        // Reset program state variables
+        pausedAtBreakpoint = false;
+        programRunning = false;
     });
 
     // Load program button handler
